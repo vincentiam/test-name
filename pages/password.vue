@@ -30,18 +30,18 @@ const login = () => {
 </script>
 
 <template>
-    <div class="flex flex-col justify-center items-center h-screen bg-[url(/images/picture.png)]">
-        <InputText type="password" v-model="password" placeholder="上機密碼"/>
-
-        
-        <div class="flex flex-row px-50vh">
-        <Button class="!bg-indigo-500 hover:!bg-fuchsia-500" label="登入" @click="login"/>
-
-
-        <NuxtLink to="/">
-            <Button label="上一頁" />
-        </NuxtLink>
+    <div class="flex flex-col justify-center items-center bg-[url(~/assets/images/picture.jpg)]">
+        <div class="flex flex-col justify-center items-center h-screen w-[20vw]">
+            <InputText class="w-full" type="password" v-model="password" placeholder="上機密碼"/>
+    
             
+            <div class="flex flex-row justify-between w-full px-50vh"> 
+            <NuxtLink to="/">
+                <Button label="上一頁" />
+            </NuxtLink>
+                
+            <Button class="!bg-indigo-500 hover:!bg-fuchsia-500" label="登入" @click="login"/>
+            </div>
         </div>
     </div>
     

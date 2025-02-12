@@ -1,3 +1,3 @@
 <template>
-    1
+    <label>1</label>
 </template>
