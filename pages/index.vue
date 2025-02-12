@@ -14,9 +14,15 @@ const login = () => {
     }
 }
 </script>
+
 <template>
-<input v-model="test">
+<InputText type="text" v-model="test" />
+
 <br>
-<button @click="login">登入</button>
+
+<Button class="!bg-indigo-500 hover:!bg-fuchsia-500" label="登入" @click="login"/>
+
 </template>
-<style scoped></style>
+
+<style scoped>
+</style>
