@@ -7,6 +7,16 @@ export default defineNuxtConfig({
     '@primevue/nuxt-module',
     '@pinia/nuxt'
   ],
+  app: {
+    head: {
+      link: [
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/icon?family=Material+Icons",
+        },
+      ],
+    },
+  },
   css: ['~/assets/css/main.css'],
   vite: {
     plugins: [tailwindcss()]

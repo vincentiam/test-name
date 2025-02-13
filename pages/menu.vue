@@ -24,8 +24,8 @@ const dialogview = ref(false)
         </div>
    
         <div class="flex justify-center items-center h-full">        
-            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/')">
-                <i class="pi pi-user !text-4xl"></i>
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <i class="material-icons !text-6xl">search</i>
                 <p>醫師問診作業</p>
             </Button>
         </div>
