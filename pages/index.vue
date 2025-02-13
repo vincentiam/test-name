@@ -25,19 +25,15 @@ const login = () => {
 </script>
 
 <template>
-    <div class="flex flex-col justify-center items-center h-screen bg-[url(/images/picture.png)]">
-        <InputText type="text" v-model="test" placeholder="上機帳號"/>
-
-        
-        <div class="flex flex-row px-50vh">
-        <Button class="!bg-indigo-500 hover:!bg-fuchsia-500" label="輸入上機密碼" @click="login"/>
-
-
-
-            <Button label="關閉" />
+    <div class="flex flex-col justify-center items-center bg-[url(~/assets/images/picture.jpg)]">
+        <div class="flex flex-col justify-center items-center h-screen w-[20vw]">
+            <InputText class="w-full" type="text" v-model="test" placeholder="上機帳號"/>
+            <div class="flex flex-row justify-between w-full px-50vh">
+                <Button label="關閉" />
+                <Button class="!bg-indigo-500 hover:!bg-fuchsia-500" label="輸入上機密碼" @click="login"/>
+            </div>
         </div>
     </div>
-    
 </template>
 
 <style scoped>
