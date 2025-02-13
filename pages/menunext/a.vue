@@ -17,16 +17,16 @@ const dialogview = ref(false)
     </div>
     <div class="grid grid-cols-4 grid-rows-3 gap-4 p-4 h-screen">
         <div class="flex justify-center items-center h-full">        
-            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a')">
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
                 <i class="pi pi-user !text-4xl"></i>
-                <p>病患掛號作業</p>
+                <p>test1</p>
             </Button>
         </div>
    
         <div class="flex justify-center items-center h-full">        
             <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/')">
                 <i class="pi pi-user !text-4xl"></i>
-                <p>醫師問診作業</p>
+                <p>test2</p>
             </Button>
         </div>
      

@@ -1,4 +1,5 @@
 <script setup>
+//輸入密碼
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
 import { useToast } from 'primevue/usetoast';
@@ -37,10 +38,10 @@ const login = () => {
             
             <div class="flex flex-row justify-between w-full px-50vh"> 
             <NuxtLink to="/">
-                <Button label="上一頁" />
+                <Button class="transition-transform duration-300 hover:scale-200" label="上一頁" />
             </NuxtLink>
                 
-            <Button class="!bg-indigo-500 hover:!bg-fuchsia-500" label="登入" @click="login"/>
+            <Button class="transition-transform duration-300 hover:scale-200 !bg-sky-400" label="登入" @click="login"/>
             </div>
         </div>
     </div>

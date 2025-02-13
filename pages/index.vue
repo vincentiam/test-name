@@ -2,14 +2,20 @@
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
 import { useToast } from 'primevue/usetoast';
+import { storeToRefs } from 'pinia';
+import { userData } from '~/store/userstore.js';
+const user = userData()
+const { userid } = storeToRefs(user)
 const toast = useToast();
 const router = useRouter()
-const test = ref('')
-console.log(test.value)
+const account = ref('')
+console.log(account.value)
 
 const login = () => {
-    if (test.value === '123') {
-        console.log('1')
+    if (account.value === '123') {
+        console.log('登入成功')
+
+        user.setId(account)
         router.push('/password')
 
     }else{
@@ -27,7 +33,7 @@ const login = () => {
 <template>
     <div class="flex flex-col justify-center items-center bg-[url(~/assets/images/picture.jpg)]">
         <div class="flex flex-col justify-center items-center h-screen w-[20vw]">
-            <InputText class="w-full" type="text" v-model="test" placeholder="上機帳號"/>
+            <InputText class="w-full" type="text" v-model="account" placeholder="上機帳號"/>
             <div class="flex flex-row justify-between w-full px-50vh">
                 <Button label="關閉" />
                 <Button class="!bg-indigo-500 hover:!bg-fuchsia-500" label="輸入上機密碼" @click="login"/>
