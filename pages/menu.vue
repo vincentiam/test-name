@@ -18,7 +18,7 @@ const dialogview = ref(false)
     <div class="grid grid-cols-4 grid-rows-3 gap-4 p-4 h-screen">
         <div class="flex justify-center items-center h-full">        
             <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a')">
-                <i class="pi pi-user !text-4xl"></i>
+                <i class="material-icons !text-6xl">search</i>
                 <p>病患掛號作業</p>
             </Button>
         </div>
@@ -30,23 +30,76 @@ const dialogview = ref(false)
             </Button>
         </div>
      
-    <NuxtLink to="/menunext/a3">
-        <Button label="Submit">
-            <i class="pi pi-user">
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <i class="material-icons !text-6xl">search</i>
+                <p>系統參數設定</p>
+            </Button>
+        </div>        
+        
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <i class="material-icons !text-6xl">search</i>
+                <p>健保門診申報</p>
+            </Button>
+        </div>
 
-            </i>
-        </Button>
-        <p>系統參數設定</p>
-    </NuxtLink>
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <i class="material-icons !text-6xl">search</i>
+                <p>批價記帳作業</p>
+            </Button>
+        </div>
 
-    <NuxtLink to="/menunext/a4">4</NuxtLink>
-    <NuxtLink to="/menunext/a5">5</NuxtLink>
-    <NuxtLink to="/menunext/a6">6</NuxtLink>
-    <NuxtLink to="/menunext/a7">7</NuxtLink>
-    <NuxtLink to="/menunext/a8">8</NuxtLink>
-    <NuxtLink to="/menunext/a9">9</NuxtLink>
-    <NuxtLink to="/menunext/a10">10</NuxtLink>
-    <NuxtLink to="/menunext/a11">11</NuxtLink>
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <i class="material-icons !text-6xl">search</i>
+                <p>主管管理作業</p>
+            </Button>
+        </div>
+
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <i class="material-icons !text-6xl">search</i>
+                <p>資料備份作業</p>
+            </Button>
+        </div>
+
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <i class="material-icons !text-6xl">search</i>
+                <p>輔助擴充作業</p>
+            </Button>
+        </div>
+
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <i class="material-icons !text-6xl">search</i>
+                <p>藥局處方列印</p>
+            </Button>
+        </div>
+
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <i class="material-icons !text-6xl">search</i>
+                <p>藥品庫存管理</p>
+            </Button>
+        </div>
+
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <i class="material-icons !text-6xl">search</i>
+                <p>會計帳款作業</p>
+            </Button>
+        </div>
+        
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <i class="material-icons !text-6xl">search</i>
+                <p>人事薪資管理</p>
+            </Button>
+        </div>
+
     <NuxtLink to="/">
         
         <Button label="關閉" >
