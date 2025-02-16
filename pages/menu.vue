@@ -24,7 +24,7 @@ const dialogview = ref(false)
         </div>
    
         <div class="flex justify-center items-center h-full">        
-            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/b')">
                 <i class="material-icons !text-6xl">search</i>
                 <p>醫師問診作業</p>
             </Button>
@@ -100,14 +100,12 @@ const dialogview = ref(false)
             </Button>
         </div>
 
-    <NuxtLink to="/">
-        
-        <Button label="關閉" >
-            <i class="pi pi-sign-out">
-
-            </i>
-        </Button>
-    </NuxtLink>
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/')">
+                <i class="pi pi-sign-out !text-4xl"></i>
+                <p>關閉</p>
+            </Button>
+        </div>
 
    
     <Dialog v-model:visible="dialogview">

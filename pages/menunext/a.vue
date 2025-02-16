@@ -19,43 +19,86 @@ const dialogview = ref(false)
         <div class="flex justify-center items-center h-full">        
             <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
                 <i class="pi pi-user !text-4xl"></i>
-                <p>test1</p>
+                <p>一般掛號作業</p>
             </Button>
         </div>
    
         <div class="flex justify-center items-center h-full">        
-            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/')">
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
                 <i class="pi pi-user !text-4xl"></i>
-                <p>test2</p>
+                <p>預約掛號作業</p>
             </Button>
         </div>
      
-    <NuxtLink to="/menunext/a3">
-        <Button label="Submit">
-            <i class="pi pi-user">
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
+                <i class="pi pi-user !text-4xl"></i>
+                <p>掛號查詢刪改</p>
+            </Button>
+        </div>
 
-            </i>
-        </Button>
-        <p>系統參數設定</p>
-    </NuxtLink>
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
+                <i class="pi pi-user !text-4xl"></i>
+                <p>病患資料輸入</p>
+            </Button>
+        </div>
 
-    <NuxtLink to="/menunext/a4">4</NuxtLink>
-    <NuxtLink to="/menunext/a5">5</NuxtLink>
-    <NuxtLink to="/menunext/a6">6</NuxtLink>
-    <NuxtLink to="/menunext/a7">7</NuxtLink>
-    <NuxtLink to="/menunext/a8">8</NuxtLink>
-    <NuxtLink to="/menunext/a9">9</NuxtLink>
-    <NuxtLink to="/menunext/a10">10</NuxtLink>
-    <NuxtLink to="/menunext/a11">11</NuxtLink>
-    <NuxtLink to="/">
-        
-        <Button label="關閉" >
-            <i class="pi pi-sign-out">
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
+                <i class="pi pi-user !text-4xl"></i>
+                <p>補印掛號收據</p>
+            </Button>
+        </div>
 
-            </i>
-        </Button>
-    </NuxtLink>
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
+                <i class="pi pi-user !text-4xl"></i>
+                <p>補卡還卡作業</p>
+            </Button>
+        </div>
 
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
+                <i class="pi pi-user !text-4xl"></i>
+                <p>事後欠卡登記</p>
+            </Button>
+        </div>
+
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
+                <i class="pi pi-user !text-4xl"></i>
+                <p>查詢欠卡患者</p>
+            </Button>
+        </div>
+
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
+                <i class="pi pi-user !text-4xl"></i>
+                <p>其它資訊查詢</p>
+            </Button>
+        </div>
+
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
+                <i class="pi pi-user !text-4xl"></i>
+                <p>還卡明細表</p>
+            </Button>
+        </div>
+
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/a_next/a1')">
+                <i class="pi pi-user !text-4xl"></i>
+                <p>其它報表列印</p>
+            </Button>
+        </div>
+
+        <div class="flex justify-center items-center h-full">        
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/')">
+                <i class="pi pi-sign-out !text-4xl"></i>
+                <p>關閉</p>
+            </Button>
+        </div>
    
     <Dialog v-model:visible="dialogview">
         <template #header>
