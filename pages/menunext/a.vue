@@ -113,5 +113,5 @@ const dialogview = ref(false)
             
         </template>
     </Dialog>
-    </div>
+    </div w-screen>
 </template>

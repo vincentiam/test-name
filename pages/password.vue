@@ -31,7 +31,7 @@ const login = () => {
 </script>
 
 <template>
-    <div class="flex flex-col justify-center items-center bg-[url(~/assets/images/picture.jpg)]">
+    <div class="flex flex-col justify-center items-center bg-[url(~/assets/images/picture.jpg)] bg-cover">
         <div class="flex flex-col justify-center items-center h-screen w-[20vw]">
             <InputText class="w-full" type="password" v-model="password" placeholder="上機密碼"/>
     
