@@ -1,3 +1,6 @@
+<script setup>
+</script>
+
 <template>
-    <label>1</label>
+1
 </template>
