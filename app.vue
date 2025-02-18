@@ -1,3 +1,7 @@
+<script setup>
+import Dialog from 'primevue/dialog';
+</script>
+
 <template>
   <div>
     <NuxtLayout >
