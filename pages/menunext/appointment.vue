@@ -36,21 +36,21 @@ const radioOptionTwice = ref('')
             </div>
          
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a1')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a3')">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>掛號查詢刪改</p>
                 </Button>
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a1')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a4')">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>病患資料輸入</p>
                 </Button>
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a1')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a5')">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>補印掛號收據</p>
                 </Button>
