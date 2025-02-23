@@ -5,7 +5,6 @@ const date = ref(null)
 // 掛號呈現內容
 const content = ref(Array.from({ length:50 },(_,i) => i+1))
 
-
 //診別選單
 const objectSelectContent = ref(null)
 const objectSelectOption = [
@@ -32,6 +31,9 @@ const numberSelectOption = [
 
 // 無處方簽章筆數
 const prescription = ref(0)
+
+const radioOption = ref([])
+
 </script>
 <template>
     <div class="flex flex-col">
@@ -109,10 +111,10 @@ const prescription = ref(0)
     
     
     <Dialog v-model:visible="changeDialog" modal header="刪除" :style="{ width: '25rem' }">
-        <div>
-            <div class="flex flex-col">
-                <RadioButton/>
-                <label v-for="(item) in content" class="text-3xl">
+        <div calss="flex flex-col">
+            <div v-for="(item,index) in content" class="flex flex-row items-center text-3xl">
+                <Checkbox v-model="radioOption" :value="index+1"/>
+                <label class="pl-2">
                     {{ item }}
                 </label>
             </div>
