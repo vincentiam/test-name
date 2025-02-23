@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+const changeDialog = ref(false)
 const date = ref(null)
 // 掛號呈現內容
 const content = ref(Array.from({ length:50 },(_,i) => i+1))
@@ -90,8 +91,9 @@ const prescription = ref(0)
                 <div class="col-span-2 col-end-15 flex items-center">
                     <label class="text-2xl">筆數: {{content.length}}</label>
                 </div>
-                <div class="col-span-2 col-end-17">
+                <div class="flex flex-row col-span-2 col-end-17">
                     <Button label="顯示" />
+                    <Button label="刪改" class=" !bg-red-500" @click="changeDialog =true"/>
                 </div>
             </div>
         </div>
@@ -104,4 +106,22 @@ const prescription = ref(0)
             </div>
         </div>
     </div>
+    
+    
+    <Dialog v-model:visible="changeDialog" modal header="刪除" :style="{ width: '25rem' }">
+        <div>
+            <div class="flex flex-col">
+                <RadioButton/>
+                <label v-for="(item) in content" class="text-3xl">
+                    {{ item }}
+                </label>
+            </div>
+
+        </div>
+        <div class="flex justify-end gap-2">
+            <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
+            <Button type="button" label="Save" @click="visible = false"></Button>
+        </div>
+    </Dialog>
+    
 </template>
