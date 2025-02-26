@@ -2,9 +2,9 @@
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const stateData = route.state?.filter;
-console.log(stateData.value)
+const stateData = route.query;
+console.log(stateData)
 </script>
 <template>
-   {{stateData}} 
+   {{stateData?.filter}}
 </template>

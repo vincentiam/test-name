@@ -7,7 +7,7 @@ const router = useRouter()
 
 const user = userData()
 const { userid } = storeToRefs(user)
-const dialogview = ref(false) 
+const dialogView = ref(false) 
 
 const dialogInput = ref('')
 
@@ -15,10 +15,10 @@ const radioOption = ref('')
 const radioOptionTwice = ref('')
 
 const trueNexta1_1 = () => {
-    dialogview.value=false 
+    dialogView.value=false 
     router.push({
         path: '/menunext/appointment_next/a1_1',
-        state: { filter: dialogInput.value}
+        query: { filter: dialogInput.value}
     });   
 }
 </script>
@@ -30,19 +30,17 @@ const trueNexta1_1 = () => {
         </div>
         <div class="grid grid-cols-4 grid-rows-3 gap-4 p-4 h-screen">
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click=" dialogview=true ">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click=" dialogView=true ">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>一般掛號作業</p>
                 </Button>
             </div>
-       
             <div class="flex justify-center items-center h-full">        
                 <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a2')">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>預約掛號作業</p>
                 </Button>
             </div>
-         
             <div class="flex justify-center items-center h-full">        
                 <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a3')">
                     <i class="pi pi-user !text-4xl"></i>
@@ -114,7 +112,7 @@ const trueNexta1_1 = () => {
             </div>
         </div>
 
-        <Dialog v-model:visible="dialogview">
+        <Dialog v-model:visible="dialogView">
             <template #header>
                 <p>一般掛號作業</p>
             </template>
@@ -150,7 +148,7 @@ const trueNexta1_1 = () => {
             
             <template #footer>
                 
-                <Button label="取消" @click="dialogview=false"/>
+                <Button label="取消" @click="dialogView=false"/>
                 
                 <Button label="確定" @click="trueNexta1_1"/>
                 
