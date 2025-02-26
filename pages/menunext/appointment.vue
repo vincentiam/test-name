@@ -13,6 +13,14 @@ const dialogInput = ref('')
 
 const radioOption = ref('')
 const radioOptionTwice = ref('')
+
+const trueNexta1_1 = () => {
+    dialogview.value=false 
+    router.push({
+        path: '/menunext/appointment_next/a1_1',
+        state: { filter: dialogInput.value}
+    });   
+}
 </script>
 
 <template>
@@ -144,7 +152,7 @@ const radioOptionTwice = ref('')
                 
                 <Button label="取消" @click="dialogview=false"/>
                 
-                <Button label="確定" @click="dialogview=false"/>
+                <Button label="確定" @click="trueNexta1_1"/>
                 
             </template>
         </Dialog>
