@@ -1,1 +1,4 @@
-<template>index</template>
+<template>
+    index
+    <test></test>
+</template>

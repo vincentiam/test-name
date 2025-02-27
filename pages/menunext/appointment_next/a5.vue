@@ -7,6 +7,7 @@ const dialogInput = ref('')
 
 const radioOption = ref('')
 const radioOptionTwice = ref('')
+const showDialog = ref(false)
 </script>
 <template>
     <div>
@@ -16,7 +17,7 @@ const radioOptionTwice = ref('')
                 <p>補印單一掛號收據</p>
             </Button>
 
-            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a5_2')">
+            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="showDialog=true">
                 <i class="pi pi-user !text-4xl"></i>
                 <p>補印多筆掛號收據</p>
             </Button>
@@ -67,7 +68,9 @@ const radioOptionTwice = ref('')
                 <Button label="確定" @click="trueNexta1_1"/>
                 
             </template>
-        </Dialog> 
+        </Dialog>
+        
+        <Letter v-model="showDialog" />
     </div>
     
 </template>
