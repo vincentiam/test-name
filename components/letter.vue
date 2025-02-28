@@ -14,7 +14,7 @@
                 registrationFee:'1',
                 deductible:'1',
                 oweCard:'1',
-                onsultingNumber:'1',
+                consultingNumber:'1',
                 appointmentNumber:'1',
                 triage:'1',
                 HIS_REG_SERIAL:'1',
@@ -26,11 +26,11 @@
                 registrationFee:'2',
                 deductible:'2',
                 oweCard:'2',
-                onsultingNumber:'2',
+                consultingNumber:'2',
                 appointmentNumber:'2',
                 triage:'2',
                 HIS_REG_SERIAL:'2',
-            }
+            },
         ]
     )
 
@@ -41,22 +41,22 @@
     <Dialog v-model:visible="showDialog" modal header="Edit Profile" :style="{ width: '80rem' }">
         <div>
             
-            <DataTable :value="products" tableStyle="min-width: 50rem">
+            <DataTable :value="products" paginator :rows="5" :rowsPerPageOptions="[5,10,20,50]" tableStyle="min-width: 50rem">
                 <Column field="number" header="病歷號碼"></Column>
                 <Column field="name" header="姓名"></Column>
                 <Column field="cardID" header="卡號"></Column>
                 <Column field="registrationFee" header="掛號費"></Column>
                 <Column field="deductible" header="自付額"></Column>
                 <Column field="oweCard" header="是否欠卡"></Column>
-                <Column field="consultingNumber" header="診號"></Column>
+                <Column field="consultingNumber" header="診間"></Column>
                 <Column field="appointmentNumber" header="診號"></Column>
                 <Column field="triage" header="傷病分類"></Column>
                 <Column field="HIS_REG_SERIAL" header="HIS_REG_SERIAL"></Column>
             </DataTable>
             
         </div>
-        <div class="grid grid-cols-16 grid-rows-4">
-            <div class="col-start-1">
+        <div class="grid grid-cols-16 grid-rows-2">
+            <div class="flex items-end col-start-1">
                 <label>選項</label>
             </div>
             <div class="flex flex-row row-start-2 col-span-6">
@@ -82,6 +82,16 @@
                     <label>終止日期:</label>
                     <DatePicker v-model="endDate" />
                 </div>
+            </div>
+            <div class="flex items-center justify-center row-start-2 col-start-11 col-span-2 w-full">
+                <Button class="h-1/2 w-full transition-transform duration-300 hover:scale-200 !bg-sky-400" label="查詢" @click="showDialog=false"/>
+            </div>
+            <div class="flex flex-col row-start-2 col-start-14 col-span-2 w-full">
+                
+                <Button label="列印" @click="showDialog=false"/>
+                
+                <Button label="取消" @click="showDialog=false"/>
+                
             </div>
         </div>
     </Dialog>

@@ -7,15 +7,12 @@ const router = useRouter()
 
 const user = userData()
 const { userid } = storeToRefs(user)
-const dialogView = ref(false) 
-
 const dialogInput = ref('')
-
-const radioOption = ref('')
-const radioOptionTwice = ref('')
+const showSearchDialog = ref(false) 
+const title =ref("請輸入掛號病患的查詢條件")
 
 const trueNexta1_1 = () => {
-    dialogView.value=false 
+    showSearchDialog.value=false 
     router.push({
         path: '/menunext/appointment_next/a1_1',
         query: { filter: dialogInput.value}
@@ -30,7 +27,7 @@ const trueNexta1_1 = () => {
         </div>
         <div class="grid grid-cols-4 grid-rows-3 gap-4 p-4 h-screen">
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click=" dialogView=true ">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click=" showSearchDialog=true ">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>一般掛號作業</p>
                 </Button>
@@ -111,48 +108,6 @@ const trueNexta1_1 = () => {
                 </Button>
             </div>
         </div>
-
-        <Dialog v-model:visible="dialogView">
-            <template #header>
-                <p>一般掛號作業</p>
-            </template>
-            
-            <div class="flex flex-col">
-                <div class="mb-6">
-                    <div>
-                        <RadioButton v-model="radioOption" inputId="rb1" name="group" value="1"/>
-                        <label for="rb1">One</label>
-                    </div>
-                    <div v-if="radioOption==='1'">
-                        <div class="ml-6">
-                            <RadioButton v-model="radioOptionTwice" inputId="rb1" name="group" value="1-1"/>
-                            <label for="rb1">One-1</label>
-                        </div>
-                        <div class="ml-6">
-                            <RadioButton v-model="radioOptionTwice" inputId="rb1" name="group" value="1-2"/>
-                            <label for="rb1">One-2</label>
-                        </div>
-                    </div>
-                    <div>
-                        <RadioButton v-model="radioOption" inputId="rb2" name="group" value="2"/>
-                        <label for="rb2">Two</label>
-                    </div>
-                    <div>
-                        <RadioButton v-model="radioOption" inputId="rb3" name="group" value="3"/>
-                        <label for="rb3">Three</label>
-                    </div>
-                </div>
-
-                <InputText type="text" v-model="dialogInput" />
-            </div>
-            
-            <template #footer>
-                
-                <Button label="取消" @click="dialogView=false"/>
-                
-                <Button label="確定" @click="trueNexta1_1"/>
-                
-            </template>
-        </Dialog>
+        <SearchDialog v-model:showSearchDialog="showSearchDialog" v-model:title="title" v-model:dialogInput="dialogInput" @confirm="trueNexta1_1 "/>
     </div>
 </template>
