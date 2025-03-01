@@ -1,3 +1,3 @@
-<template>
-    6
+< script setup><template>
+    123
 </template>

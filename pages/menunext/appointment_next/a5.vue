@@ -26,7 +26,7 @@ const to_a5_1 = () => {
                 <p>補印多筆掛號收據</p>
             </Button>
 
-            <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment')">
+            <Button class="transition-transform 5duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment')">
                 <i class="pi pi-user !text-4xl"></i>
                 <p>上一頁</p>
             </Button>
