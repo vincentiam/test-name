@@ -1,10 +1,17 @@
 <script setup>
-import { ref } from 'vue'
+const supabase = useSupabase()
 const date = ref(null)
 // 掛號呈現內容
-const content = ref(Array.from({ length:50 },(_,i) => i+1))
-
-
+const content = ref([])
+const fetchData = async() => {
+    const { data, error } = await supabase.from('appointment_data').select('*')
+    if(error) {
+        console.error('error', error)
+    } else {
+        content.value = data
+        console.log(content.value)
+    }
+}
 //診別選單
 const objectSelectContent = ref(null)
 const objectSelectOption = [
@@ -31,6 +38,9 @@ const numberSelectOption = [
 
 // 無處方簽章筆數
 const prescription = ref(0)
+onMounted(() => {
+    fetchData()
+})
 </script>
 <template>
     <div class="flex flex-col">
@@ -98,8 +108,13 @@ const prescription = ref(0)
         <div class="flex flex-col p-2">
             
             <div class="grid grid-cols-5 grid-rows-6 gap-3">
-                <label v-for="(item) in content">
-                    {{ item }}
+                <label v-for="(item) in content" class="grid grid-cols-4">
+                    <div class="grid-start-1">
+                        {{ item.number }}
+                    </div>
+                    <div class="grid-start-3">
+                        {{ item.name }}
+                    </div>
                 </label>
             </div>
         </div>

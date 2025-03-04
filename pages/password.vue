@@ -1,14 +1,38 @@
 <script setup>
 //輸入密碼
 import {ref} from 'vue'
-import {useRouter} from 'vue-router'
+import {useRouter, useRoute} from 'vue-router'
 import { useToast } from 'primevue/usetoast';
+const { auth } = useSupabaseClient();
 const toast = useToast();
+const route = useRoute()
 const router = useRouter()
+const account = route.query
 const password = ref('')
 console.log(password.value)
 
-const login = () => {
+const login = async() => {
+    const { error } = await auth.signInWithPassword({
+            email: email.value,
+            password: password.value,
+        });
+        if (error) {{
+            console.error(error);
+            toast.add({
+                severity: 'error',
+                summary: '密碼錯誤',
+                //detail: 登入失敗,
+                life: 1500
+            })
+        }}else{
+            router.push('/menu')
+            toast.add({
+                severity: 'success',
+                summary: '登入成功',
+                // detail: 登入成功,
+                life: 1500
+            })
+        }
     if (password.value === 'abc') {
         console.log('1')
         router.push('/menu')

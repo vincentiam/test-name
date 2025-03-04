@@ -4,6 +4,7 @@ import {useRouter} from 'vue-router'
 import { useToast } from 'primevue/usetoast';
 import { storeToRefs } from 'pinia';
 import { userData } from '~/store/userstore.js';
+
 const user = userData()
 const { userid } = storeToRefs(user)
 const toast = useToast();
@@ -16,7 +17,10 @@ const login = () => {
         console.log('登入成功')
 
         user.setId(account)
-        router.push('/password')
+        router.push({
+            path: '/password',
+            query: {account: account.value}
+        })
 
     }else{
         toast.add({

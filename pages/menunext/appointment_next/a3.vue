@@ -1,11 +1,22 @@
 <script setup>
 import { ref } from 'vue'
+import { useToast } from 'primevue/usetoast';
+const toast = useToast();
 const changeDialog = ref(false)
 const date = ref(null)
 const buttonDisabled =ref(true)
+const supabase = useSupabase()
 // 掛號呈現內容
-const content = ref(Array.from({ length:50 },(_,i) => i+1))
-
+const content = ref([])
+const fetchData = async() => {
+    const { data, error } = await supabase.from('appointment_data').select('*')
+    if(error) {
+        console.error('error', error)
+    } else {
+        content.value = data
+        console.log(content.value)
+    }
+}
 //診別選單
 const objectSelectContent = ref(null)
 const objectSelectOption = [
@@ -35,9 +46,26 @@ const prescription = ref(0)
 
 const radioOption = ref([])
 
-const changeArray = () => {
-    const result = content.value.filter(item=>!radioOption.value.includes(item))
-    content.value = result
+const changeArray = async() => {
+
+    console.log(radioOption.value)
+    const { error } = await supabase.from('appointment_data').delete().in('number', radioOption.value)
+    if (error) {
+        console.log(error.message)
+        toast.add({
+            severity: 'error',
+            summary: '刪除失敗',
+            life: 1500
+        })
+    } else {
+        console.log('資料刪除成功！')
+        toast.add({
+            severity: 'success',
+            summary: '刪除成功',
+            life: 1500
+        })
+        fetchData() // ✅ 刪除後更新列表
+    }
     changeDialog.value = false
 }
 
@@ -46,6 +74,11 @@ const showDialog =() => {
     changeDialog.value =true
 
 }
+
+onMounted(() => {
+    fetchData()
+})
+
 </script>
 <template>
     <div class="flex flex-col">
@@ -114,8 +147,13 @@ const showDialog =() => {
         <div class="flex flex-col p-2">
             
             <div class="grid grid-cols-5 grid-rows-6 gap-3">
-                <label v-for="(item) in content">
-                    {{ item }}
+                <label v-for="(item) in content" class="grid grid-cols-4">
+                    <div class="grid-start-1">
+                        {{ item.number }}
+                    </div>
+                    <div class="grid-start-3">
+                        {{ item.name }}
+                    </div>
                 </label>
             </div>
         </div>
@@ -125,10 +163,15 @@ const showDialog =() => {
     <Dialog v-model:visible="changeDialog" modal header="刪除" :style="{ width: '25rem' }">
         <div calss="flex flex-col">
             <div v-for="(item,index) in content" class="flex flex-row items-center text-3xl">
-                <Checkbox v-model="radioOption" :value="index+1" @click="buttonDisabled=true"/>
-                <label class="pl-2">
-                    {{ item }}
-                </label>
+                <Checkbox v-model="radioOption" :value="item.number" @click="buttonDisabled=true"/>
+                <div class="w-full grid grid-cols-4">
+                    <div class="grid-start-1">
+                        {{ item.number }}
+                    </div>
+                    <div class="grid-start-3">
+                        {{ item.name }}
+                    </div>
+                </div>
             </div>
 
         </div>
