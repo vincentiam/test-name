@@ -8,6 +8,8 @@ const router = useRouter()
 const user = userData()
 const { userid } = storeToRefs(user)
 const dialogInput = ref('')
+
+//一般掛號作業
 const showSearchDialog = ref(false) 
 const title =ref("請輸入掛號病患的查詢條件")
 
@@ -18,6 +20,19 @@ const trueNexta1_1 = () => {
         query: { filter: dialogInput.value}
     });   
 }
+
+//補卡還卡作業
+const showCard = ref(false) 
+const card =ref("請輸入補卡還卡病患的查詢條件")
+
+const trueNexta6 = () => {
+    showCard.value=false 
+    router.push({
+        path: '/menunext/appointment_next/a6',
+        query: { filter: dialogInput.value}
+    });   
+}
+
 </script>
 
 <template>
@@ -60,7 +75,7 @@ const trueNexta1_1 = () => {
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click=" showSearchDialog=true ">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click=" showCard=true ">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>補卡還卡作業</p>
                 </Button>
@@ -109,5 +124,6 @@ const trueNexta1_1 = () => {
             </div>
         </div>
         <SearchDialog v-model:showSearchDialog="showSearchDialog" v-model:title="title" v-model:dialogInput="dialogInput" @confirm="trueNexta1_1 "/>
+        <SearchDialog v-model:showSearchDialog="showCard" v-model:title="card" v-model:dialogInput="dialogInput" @confirm="trueNexta6 "/>
     </div>
 </template>
