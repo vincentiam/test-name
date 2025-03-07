@@ -13,12 +13,17 @@ const dialogInput = ref('')
 const showSearchDialog = ref(false) 
 const title =ref("請輸入掛號病患的查詢條件")
 
+const column = defineModel('column')
 const trueNexta1_1 = () => {
+    console.log(column.value)
     showSearchDialog.value=false 
     router.push({
         path: '/menunext/appointment_next/a1_1',
-        query: { filter: dialogInput.value}
-    });   
+        query: {
+            filter: dialogInput.value,
+            column: column.value,
+        }
+    });
 }
 
 //補卡還卡作業
@@ -32,7 +37,6 @@ const trueNexta6 = () => {
         query: { filter: dialogInput.value}
     });   
 }
-
 </script>
 
 <template>
@@ -123,7 +127,7 @@ const trueNexta6 = () => {
                 </Button>
             </div>
         </div>
-        <SearchDialog v-model:showSearchDialog="showSearchDialog" v-model:title="title" v-model:dialogInput="dialogInput" @confirm="trueNexta1_1 "/>
+        <SearchDialog v-model:showSearchDialog="showSearchDialog" v-model:title="title" v-model:dialogInput="dialogInput" v-model:column="column" @confirm="trueNexta1_1 "/>
         <SearchDialog v-model:showSearchDialog="showCard" v-model:title="card" v-model:dialogInput="dialogInput" @confirm="trueNexta6 "/>
     </div>
 </template>

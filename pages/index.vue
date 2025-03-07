@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 
-const supabase = useSupabase()
+const supabase = useSupabaseClient()
 const newName = ref('')
 const message = ref('')
 
@@ -33,7 +33,7 @@ const fetchRecords = async () => {
     } else {
         dataset.value = data
     }
-    }
+}
 
 const dataDeletePop = async() => {
     const { error } = await supabase.from('receipt').delete().eq('user', dataset.value.slice(-1)[0].user)

@@ -1,5 +1,5 @@
 <script setup>
-const supabase = useSupabase()
+const supabase = useSupabaseClient()
 const date = ref(null)
 // 掛號呈現內容
 const content = ref([])
