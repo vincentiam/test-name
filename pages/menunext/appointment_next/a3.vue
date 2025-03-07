@@ -5,7 +5,7 @@ const toast = useToast();
 const changeDialog = ref(false)
 const date = ref(null)
 const buttonDisabled =ref(true)
-const supabase = useSupabase()
+const supabase = useSupabaseClient()
 // 掛號呈現內容
 const content = ref([])
 const fetchData = async() => {

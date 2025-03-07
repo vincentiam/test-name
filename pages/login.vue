@@ -14,29 +14,20 @@ const account = ref('')
 const password = ref('')
 
 const login = async() => {
-    const { error } = await auth.signInWithPassword({
-            email: account.value,
-            password: password.value,
-        });
-        if (error) {{
-            console.error(error);
-            toast.add({
-                severity: 'error',
-                summary: '密碼錯誤',
-                //detail: 登入失敗,
-                life: 1500
-            })
-        }}else{
-            router.push('/menu')
-            toast.add({
-                severity: 'success',
-                summary: '登入成功',
-                // detail: 登入成功,
-                life: 1500
-            })
-        }
-    if (password.value === 'abc') {
-        console.log('1')
+    const { data, error } = await auth.signInWithPassword({
+        email: account.value + '@nogmail.com',
+        password: password.value,
+    });
+    if (error) {{
+        console.error(error);
+        toast.add({
+            severity: 'error',
+            summary: '密碼錯誤',
+            //detail: 登入失敗,
+            life: 1500
+        })
+    }}else{
+        console.log(data)
         router.push('/menu')
         toast.add({
             severity: 'success',
@@ -44,14 +35,6 @@ const login = async() => {
             // detail: 登入成功,
             life: 1500
         })
-    }else{
-        toast.add({
-            severity: 'error',
-            summary: '密碼錯誤',
-            //detail: 登入失敗,
-            life: 1500
-        })
-        console.log('2')
     }
 }
 </script>
@@ -68,6 +51,3 @@ const login = async() => {
         </div>
     </div>
 </template>
-
-<style scoped>
-</style>

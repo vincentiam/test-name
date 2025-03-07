@@ -7,8 +7,7 @@ const router = useRouter()
 
 const user = userData()
 const { userid } = storeToRefs(user)
-const dialogview = ref(false) 
-
+const dialogview = ref(false)
 </script>
 
 <template>
