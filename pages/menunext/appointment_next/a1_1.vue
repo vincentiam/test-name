@@ -7,12 +7,12 @@ const columnData = route.query.column;
 
 const dataset = ref([])
 const fetchRecords = async () => {
-   let queryData = supabase.from('search_test').select('*')
+   let queryData = supabase.from('patient_appointment').select('*')
    if (inputData.trim() !== ''){
       if(columnData === "startDate" || columnData === "lastDate" || columnData === "birthday"){
          queryData = queryData.eq(columnData, inputData);
       }else{
-         queryData.ilike(`${columnData}::text`,`%${inputData}%`)
+         queryData.ilike(columnData,`%${inputData}%`)
       }
    }
    const { data, error } = await queryData
