@@ -27,7 +27,7 @@ const returnOption = () => {
                 </div>
                 <div v-if="radioOption==='auto'">
                     <div class="ml-6">
-                        <RadioButton v-model="radioOptionTwice" inputId="rb1" name="group" value="number"/>
+                        <RadioButton v-model="radioOptionTwice" inputId="rb1" name="group" value="medical_history_number"/>
                         <label for="rb1">依病歷號碼查詢</label>
                     </div>
                     <div class="ml-6">
@@ -39,7 +39,7 @@ const returnOption = () => {
                         <label for="rb1">依出生日期查詢</label>
                     </div>
                     <div class="ml-6">
-                        <RadioButton v-model="radioOptionTwice" inputId="rb1" name="group" value="ID"/>
+                        <RadioButton v-model="radioOptionTwice" inputId="rb1" name="group" value="id"/>
                         <label for="rb1">依身份證號查詢</label>
                     </div>
                     <div class="ml-6">
@@ -56,11 +56,11 @@ const returnOption = () => {
                     </div>
                 </div>
                 <div>
-                    <RadioButton v-model="radioOption" inputId="rb2" name="group" value="startDate"/>
+                    <RadioButton v-model="radioOption" inputId="rb2" name="group" value="start_date"/>
                     <label for="rb2">初診日期</label>
                 </div>
                 <div>
-                    <RadioButton v-model="radioOption" inputId="rb3" name="group" value="lastDate"/>
+                    <RadioButton v-model="radioOption" inputId="rb3" name="group" value="last_date"/>
                     <label for="rb3">最近就診日期</label>
                 </div>
             </div>

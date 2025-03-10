@@ -14,27 +14,21 @@ const showSearchDialog = ref(false)
 const title =ref("請輸入掛號病患的查詢條件")
 
 const column = defineModel('column')
-const trueNexta1_1 = () => {
-    console.log(column.value)
-    showSearchDialog.value=false 
-    router.push({
-        path: '/menunext/appointment_next/a1_1',
-        query: {
-            filter: dialogInput.value,
-            column: column.value,
-        }
-    });
-}
+
+
 
 //補卡還卡作業
 const showCard = ref(false) 
 const card =ref("請輸入補卡還卡病患的查詢條件")
 
-const trueNexta6 = () => {
+const trueNext = (r) => {
     showCard.value=false 
     router.push({
-        path: '/menunext/appointment_next/a6',
-        query: { filter: dialogInput.value}
+        path: `/menunext/appointment_next/${r}`,
+        query: {
+            filter: dialogInput.value,
+            column: column.value,
+        }
     });   
 }
 </script>
@@ -93,14 +87,14 @@ const trueNexta6 = () => {
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a1')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a5')">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>查詢欠卡患者</p>
                 </Button>
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a1')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a6')">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>其它資訊查詢</p>
                 </Button>
@@ -127,7 +121,7 @@ const trueNexta6 = () => {
                 </Button>
             </div>
         </div>
-        <SearchDialog v-model:showSearchDialog="showSearchDialog" v-model:title="title" v-model:dialogInput="dialogInput" v-model:column="column" @confirm="trueNexta1_1 "/>
-        <SearchDialog v-model:showSearchDialog="showCard" v-model:title="card" v-model:dialogInput="dialogInput" @confirm="trueNexta6 "/>
+        <SearchDialog v-model:showSearchDialog="showSearchDialog" v-model:title="title" v-model:dialogInput="dialogInput" v-model:column="column" @confirm="trueNext('a1_1')"/>
+        <SearchDialog v-model:showSearchDialog="showCard" v-model:title="card" v-model:dialogInput="dialogInput" v-model:column="column" @confirm="trueNext('a6') "/>
     </div>
 </template>
