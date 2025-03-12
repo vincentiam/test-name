@@ -87,7 +87,7 @@ const trueNext = (r) => {
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a5')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a8')">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>查詢欠卡患者</p>
                 </Button>

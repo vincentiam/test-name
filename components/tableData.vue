@@ -4,32 +4,32 @@ console.log(dataset)
 </script>
 <template>
    <DataTable :value="dataset" tableStyle="min-width: 50rem">
-      <div v-if="dataset.some(item => 'name' in item)">
-         <Column field="name" header="姓名"/>
+      <div v-if="dataset.some(item => 'userName' in item)">
+         <Column field="userName" header="姓名"/>
       </div>
-      <div v-if="dataset.some(item => 'medical_history_number' in item)">
-         <Column field="medical_history_number" header="病歷號碼"/>
+      <div v-if="dataset.some(item => 'medicalHistoryNumber' in item)">
+         <Column field="medicalHistoryNumber" header="病歷號碼"/>
       </div>
-      <div v-if="dataset.some(item => 'id' in item)">
-         <Column field="id" header="身分證字號"/>
+      <div v-if="dataset.some(item => 'userId' in item)">
+         <Column field="userId" header="身分證字號"/>
       </div>
-      <div v-if="dataset.some(item => 'birthday' in item)">
-         <Column field="birthday" header="生日"/>
+      <div v-if="dataset.some(item => 'userBirthday' in item)">
+         <Column field="userBirthday" header="生日"/>
       </div>
-      <div v-if="dataset.some(item => 'phone' in item)">
-         <Column field="phone" header="電話號碼"/>
+      <div v-if="dataset.some(item => 'userPhone' in item)">
+         <Column field="userPhone" header="電話號碼"/>
       </div>
-      <div v-if="dataset.some(item => 'address' in item)">
-         <Column field="address" header="地址"/>
+      <div v-if="dataset.some(item => 'userAddress' in item)">
+         <Column field="userAddress" header="地址"/>
       </div>
       <div v-if="dataset.some(item => 'remark' in item)">
          <Column field="remark" header="備註"/>
       </div>
-      <div v-if="dataset.some(item => 'start_date' in item)">
-         <Column field="start_date" header="初診日期"/>
+      <div v-if="dataset.some(item => 'startDate' in item)">
+         <Column field="startDate" header="初診日期"/>
       </div>
-      <div v-if="dataset.some(item => 'last_date' in item)">
-         <Column field="last_date" header="最近日期"/>
+      <div v-if="dataset.some(item => 'lastDate' in item)">
+         <Column field="lastDate" header="最近日期"/>
       </div>
    </DataTable>
 </template>
