@@ -21,8 +21,14 @@ const column = defineModel('column')
 const showCard = ref(false) 
 const card =ref("請輸入補卡還卡病患的查詢條件")
 
+//還卡明細表
+const showTimePeriod = ref(false) 
+const periodTitle =ref("輸入還卡日期區間")
+
 const trueNext = (r) => {
-    showCard.value=false 
+    showCard.value=false
+    showSearchDialog.value=false 
+    showSearchDialog.value=false 
     router.push({
         path: `/menunext/appointment_next/${r}`,
         query: {
@@ -94,21 +100,21 @@ const trueNext = (r) => {
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a6')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a9')">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>其它資訊查詢</p>
                 </Button>
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a1')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="showTimePeriod=true">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>還卡明細表</p>
                 </Button>
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a1')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150"  label="Submit" size="large" @click="router.push('/menunext/appointment_next/a11')">
                     <i class="pi pi-user !text-4xl"></i>
                     <p>其它報表列印</p>
                 </Button>
@@ -123,5 +129,6 @@ const trueNext = (r) => {
         </div>
         <SearchDialog v-model:showSearchDialog="showSearchDialog" v-model:title="title" v-model:dialogInput="dialogInput" v-model:column="column" @confirm="trueNext('a1_1')"/>
         <SearchDialog v-model:showSearchDialog="showCard" v-model:title="card" v-model:dialogInput="dialogInput" v-model:column="column" @confirm="trueNext('a6') "/>
+        <TimePeriod v-model:showTimePeriod="showTimePeriod" v-model:title="periodTitle" />
     </div>
 </template>
