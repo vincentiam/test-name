@@ -58,12 +58,6 @@ onMounted(async()=>{
                 <Select v-model="selectUser" :options="optionsUser" optionLabel="name" class="w-full" />   
             </div>
 
-            <div class="mt-3">
-                <p>排序方式</p>
-            </div>
-            <div class="w-full">
-                <Select v-model="selectSort" :options="optionsSort" optionLabel="name" class="w-full" />   
-            </div>
         </div>
         <div class="mt-6 grid grid-cols-5">
             <div class="col-start-2">
