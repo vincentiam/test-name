@@ -11,9 +11,16 @@ const dateDialog = ref(false)
 const date = ref(null);
 const date_roc = ref(null)
 
-
+const radioSearch = ref('dr')
+const searchDialog = ref(false)
+const drInput = ref(null)
+const dateInput = ref(new Date())
 const selectTime = ref('早上')
 
+const showSearchDialog = ref(false) 
+const title =ref("查詢病患的病歷號碼")
+
+const column = defineModel('column')
 
 const boardDialog = ref(false)
 watch(date, (date) => {
@@ -30,7 +37,7 @@ async function fetchAppointments() {
     const { data, error } = await supabase
         .from('appointmentList')
         .select(`
-        staff(staffId, staffName),
+        dr(dr.id, name),
         users(userId),
         visitList,
         done
@@ -75,6 +82,34 @@ async function fetchAppointments() {
     formattedAppointments.value = Object.values(groupedData)
     }
 
+    const trueNext = (r) => {
+    searchDialog.value=false
+    if(radioSearch.value==="dr"){
+        router.push({
+        path: `/menunext/appointment_next/${r}`,
+        query: {
+            filter: drInput.value,
+            column: radioSearch.value,
+        }
+    });   
+    } else if(radioSearch.value==="date"){
+        router.push({
+        path: `/menunext/appointment_next/${r}`,
+        query: {
+            filter: dateInput.value,
+            column: radioSearch.value,
+        }
+    });   
+    }else{
+        router.push({
+        path: `/menunext/appointment_next/${r}`,
+        query: {
+            column: radioSearch.value,
+        }
+    });   
+    }
+}
+
 onMounted(()=>{
     date.value=new Date()
     selectTime.value='早上'
@@ -96,7 +131,7 @@ onMounted(()=>{
             </div>
         
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/appointment_next/a9')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="searchDialog=true">
                     <i class="material-icons !text-6xl">search</i>
                     <p>醫師排班查詢</p>
                 </Button>
@@ -243,6 +278,38 @@ onMounted(()=>{
                 <Button label="更換時段" @click="boardDialog=false; dateDialog=true"/>
                 
             </template>
+        </Dialog>
+        
+        
+        <Button label="Show" @click="visible = true" />
+        
+        <Dialog v-model:visible="searchDialog" modal header="醫師排班查詢">
+            <div class="w-full">
+                <div class="flex flex-row items-center w-full mb-3">
+                    <RadioButton v-model="radioSearch" inputId="dr" name="group" value="dr" class="mr-2"/>
+                    <label for="dr">依醫師查詢</label>
+                </div>
+                <div class="flex flex-row items-center w-full mb-3">
+                    <RadioButton v-model="radioSearch" inputId="date" name="group" value="date" class="mr-2"/>
+                    <label for="date">依日期查詢</label>
+                </div>
+                <div class="flex flex-row items-center w-full mb-3">
+                    <RadioButton v-model="radioSearch" inputId="all" name="group" value="all" class="mr-2"/>
+                    <label for="all">全院排班表</label>
+                </div>
+                <div class="flex flex-col w-full mb-3" v-if="radioSearch==='dr'">
+                    <label>請輸入查詢醫師</label>
+                    <InputText type="text" v-model="drInput" />
+                </div>
+                <div class="flex flex-col w-full mb-3" v-if="radioSearch==='date'">
+                    <label>請輸入查詢日期</label>
+                    <DatePicker v-model="dateInput" />
+                </div>
+            </div>   
+            <div class="flex justify-end gap-2">
+                <Button type="button" label="Cancel" severity="secondary" @click="searchDialog = false"></Button>
+                <Button type="button" label="Save" @click="trueNext('a9_2')"></Button>
+            </div>
         </Dialog>
         
     </div>
