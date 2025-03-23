@@ -37,7 +37,7 @@ async function fetchAppointments() {
     const { data, error } = await supabase
         .from('appointmentList')
         .select(`
-        dr(dr.id, name),
+        dr(dr_id, name),
         users(userId),
         visitList,
         done
@@ -52,10 +52,10 @@ async function fetchAppointments() {
     const groupedData = {}
 
     data.forEach(appointment => {
-        const doctorId = appointment.staff.staffId
+        const doctorId = appointment.dr.dr_id
         if (!groupedData[doctorId]) {
         groupedData[doctorId] = {
-            doctor_name: appointment.staff.staffName,
+            doctor_name: appointment.dr.name,
             first_visit_count: 0,
             waiting_count: 0, 
             completed_count: 0,
