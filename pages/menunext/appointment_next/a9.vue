@@ -13,7 +13,7 @@ const date_roc = ref(null)
 
 const radioSearch = ref('dr')
 const searchDialog = ref(false)
-const drInput = ref(null)
+const drInput = ref('')
 const dateInput = ref(new Date())
 const selectTime = ref('早上')
 
@@ -37,7 +37,7 @@ async function fetchAppointments() {
     const { data, error } = await supabase
         .from('appointmentList')
         .select(`
-        dr(dr_id, name),
+        dr(dr_id, dr_name),
         users(userId),
         visitList,
         done
@@ -55,7 +55,7 @@ async function fetchAppointments() {
         const doctorId = appointment.dr.dr_id
         if (!groupedData[doctorId]) {
         groupedData[doctorId] = {
-            doctor_name: appointment.dr.name,
+            doctor_name: appointment.dr.dr_name,
             first_visit_count: 0,
             waiting_count: 0, 
             completed_count: 0,
