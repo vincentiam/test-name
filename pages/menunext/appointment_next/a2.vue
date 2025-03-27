@@ -4,7 +4,7 @@ const date = ref(null)
 // 掛號呈現內容
 const content = ref([])
 const fetchData = async() => {
-    const { data, error } = await supabase.from('appointment_data').select('*')
+    const { data, error } = await supabase.from('booking').select(`*,users(users_name)`)
     if(error) {
         console.error('error', error)
     } else {
@@ -15,31 +15,30 @@ const fetchData = async() => {
 //診別選單
 const objectSelectContent = ref(null)
 const objectSelectOption = [
-    {name: '診別一', value:'診別一' },
-    {name: '診別二', value:'診別二' },
-    {name: '診別三', value:'診別三' }
+    {name: '1', value:'1' },
+    {name: '2', value:'2' },
+    {name: '3', value:'3' }
 ]
 
 // 掛號時間選單
 const timeSelectContent = ref(null)
 const timeSelectOption = [
-    {name: '1', value:'1' },
-    {name: '2', value:'2' },
-    {name: '3', value:'3' }
+    {name: '早上', value:'早上' },
+    {name: '下午', value:'下午' },
+    {name: '晚上', value:'晚上' }
 ]
 
 // 病歷號碼病歷號碼選單
 const numberSelectContent = ref(null)
-const numberSelectOption = [
-    {name: '1', value:'1' },
-    {name: '2', value:'2' },
-    {name: '3', value:'3' }
-]
+const numberSelectOption = ref([])
 
 // 無處方簽章筆數
 const prescription = ref(0)
 onMounted(() => {
     fetchData()
+    for (var i = 0; i < content.value.length; i++) {
+        numberSelectOption.value.push({name:`${i}`,value:`${i}`})
+    }
 })
 </script>
 <template>
@@ -107,13 +106,13 @@ onMounted(() => {
         </div>
         <div class="flex flex-col p-2">
             
-            <div class="grid grid-cols-5 grid-rows-6 gap-3">
-                <label v-for="(item) in content" class="grid grid-cols-4">
+            <div class="grid grid-cols-3 grid-rows-6 gap-3">
+                <label v-for="(item) in content" class="grid grid-cols-5">
                     <div class="grid-start-1">
-                        {{ item.number }}
+                        {{ item.booking_number }}
                     </div>
-                    <div class="grid-start-3">
-                        {{ item.name }}
+                    <div class="grid-start-2">
+                        {{ item.users.users_name }}
                     </div>
                 </label>
             </div>
