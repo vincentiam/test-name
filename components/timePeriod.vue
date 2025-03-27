@@ -25,7 +25,7 @@ onMounted(async()=>{
         console.log(error.message)
     }
     data.forEach((item) =>{
-        optionsUser.value.push({name:item.staffName,code:item.staffId})
+        optionsUser.value.push({name:item.staff_name,code:item.staff_id})
     } )
 })
 </script>

@@ -35,12 +35,12 @@ const formattedAppointments = ref([])
 
 async function fetchAppointments() {
     const { data, error } = await supabase
-        .from('appointmentList')
+        .from('appointment_list')
         .select(`
         dr(dr_id, dr_name),
-        users(userId),
-        visitList,
-        done
+        users(users_id),
+        appointment_list_visit_list,
+        appointment_list_done
         `)
 
     if (error) {
@@ -64,15 +64,15 @@ async function fetchAppointments() {
         }
 
         // 判斷是否為初診
-        const isFirstVisit = !data.some(a => a.users.userId === appointment.users.userId ) //&& a.visitList < appointment.visitList
+        const isFirstVisit = !data.some(a => a.users.users_id === appointment.users.users_id ) //&& a.visitList < appointment.visitList
 
         if (isFirstVisit) {
         groupedData[doctorId].first_visit_count++
         }
         
-        if (appointment.done === '完診') {
+        if (appointment.appointment_list_done === '完診') {
         groupedData[doctorId].completed_count++
-        } else if (appointment.done === '候診') {
+        } else if (appointment.appointment_list_done === '候診') {
         groupedData[doctorId].waiting_count++
         }
 
@@ -160,7 +160,7 @@ const cardDialog = ref(true)
     const deleteRecord = () => {
     if (records.value.length > 0) {
         records.value.splice(currentIndex.value, 1)
-        currentIndex.value = Math.max0(, currentIndex.value - 1)
+        currentIndex.value = Math.max(0, currentIndex.value - 1)
     }
     }
     const selectPrescription = () => {

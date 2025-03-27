@@ -11,9 +11,9 @@ const fetchRecords = async () => {
       .select('*');
 
    if (inputData.trim() !== '') {
-      if (columnData === "startDate" || columnData === "lastDate") {
+      if (columnData === "users_start_date" || columnData === "users_last_date") {
          queryData = queryData.eq(columnData, inputData); // Exact match for date columns
-      } else if(columnData === "userBirthday"){
+      } else if(columnData === "users_birthday"){
          queryData = queryData.eq(`${columnData}`, inputData); // Exact match for date columns
       } else {
          queryData = queryData.ilike(columnData, `%${inputData}%`); // Case-insensitive match for other columns in patient_appointment
