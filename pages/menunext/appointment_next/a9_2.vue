@@ -1,59 +1,77 @@
 <script setup>
-import { useRoute } from 'vue-router';
-const route = useRoute();
-const inputData = route.query.filter;
-const columnData = route.query.column;
+    import { useRoute } from 'vue-router';
+    import { onMounted, ref } from 'vue';
+    const route = useRoute();
+    const inputData = route.query.filter || '';
+    const columnData = route.query.column || '';
+    const supabase = useSupabaseClient();
 
-const supabase = useSupabaseClient();
+    const dataset = ref([]);
 
-const { data, error } = await useAsyncData('drSchedule', async () => {
-    let queryData = supabase.from('drSchedule').select(`drSchedule_date,drSchedule_time,drSchedule_clinic, dr(dr_id, dr_name)`);
-console.log(queryData)
-    if (columnData === 'dr') {
-        if (inputData.trim() !== '') {
-            queryData = queryData.filter('dr_name', 'ilike', `%${inputData}%`)
+    const fetchData = async () => {
+    let query = supabase
+        .from('drSchedule')
+        .select(`drSchedule_date, drSchedule_time, drSchedule_clinic, dr(dr_id, dr_name)`);
+
+    if (columnData === 'dr' && inputData.trim() !== '') {
+        // 先找符合 dr_name 的 dr_id
+        const { data: drList, error: drError } = await supabase
+            .from('dr')
+            .select('dr_id, dr_name')
+            .ilike('dr_name', `%${inputData}%`);
+
+        if (drError) {
+            console.error('查詢 dr 錯誤：', drError);
+            return;
         }
-    } else if (columnData === 'date') {
-        let formattedDate = '';
+
+        const drIds = drList.map(d => d.dr_id);
+
+        if (drIds.length > 0) {
+            query = query.in('dr_id', drIds);
+        } else {
+            dataset.value = []; // 沒有匹配的醫師時直接回傳空資料
+            return;
+        }
+    }
+
+    if (columnData === 'date') {
         try {
             const cleaned = inputData.replace(/\(.*?\)/g, '').trim();
             const dateObj = new Date(cleaned);
 
             if (!isNaN(dateObj.getTime())) {
-                const year = dateObj.getFullYear(); // ✅ 改用本地時間
+                const year = dateObj.getFullYear();
                 const month = String(dateObj.getMonth() + 1).padStart(2, '0');
                 const day = String(dateObj.getDate()).padStart(2, '0');
-                formattedDate = `${year}-${month}-${day}`;
+                const formattedDate = `${year}-${month}-${day}`;
+                query = query.eq('drSchedule_date', formattedDate);
             } else {
-                console.warn('⚠️ 無法轉換為日期，使用原始輸入：', inputData);
-                formattedDate = inputData;
+                console.warn('⚠️ 日期格式錯誤，原樣使用：', inputData);
+                query = query.eq('drSchedule_date', inputData);
             }
-
-            queryData = queryData.eq('drSchedule_date', formattedDate);
         } catch (e) {
             console.error('日期處理錯誤：', e);
         }
     }
 
-    // ⚠️ 不要重複命名 data / error
-    const { data: fetchedData, error: fetchError } = await queryData;
+    const { data: fetchedData, error: fetchError } = await query;
 
     if (fetchError) {
         console.error('Supabase 查詢錯誤：', fetchError);
     } else {
-        console.log('✅ 查詢結果：', fetchedData);
+        dataset.value = fetchedData;
+        console.table(fetchedData);
     }
+};
 
-    return fetchedData;
+onMounted(() => {
+    fetchData();
 });
-
-if (error.value) {
-    console.error('useAsyncData 錯誤：', error.value);
-}
 </script>
 
 <template>
-    <DataTable :value="data">
+    <DataTable :value="dataset">
         <Column field="dr.dr_id" header="醫師編號" />
         <Column field="dr.dr_name" header="醫師姓名" />
         <Column field="drSchedule_clinic" header="科別" />
