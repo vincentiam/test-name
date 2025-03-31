@@ -27,7 +27,7 @@ const returnOption = () => {
                 </div>
                 <div v-if="radioOption===''">
                     <div class="ml-6">
-                        <RadioButton v-model="radioOptionTwice" inputId="rb1" name="group" value="users_medicalHistoryNumber"/>
+                        <RadioButton v-model="radioOptionTwice" inputId="rb1" name="group" value="users_medical_history_number"/>
                         <label for="rb1">依病歷號碼查詢</label>
                     </div>
                     <div class="ml-6">

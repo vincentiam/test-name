@@ -236,7 +236,7 @@ onMounted(()=>{
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/appointment_next/a9')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/appointment_next/a9_6')">
                     <i class="material-icons !text-6xl">search</i>
                     <p>現金收入日報表</p>
                 </Button>

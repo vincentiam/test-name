@@ -7,8 +7,8 @@ console.log(dataset)
       <div v-if="dataset.some(item => 'users_name' in item)">
          <Column field="users_name" header="姓名"/>
       </div>
-      <div v-if="dataset.some(item => 'users_medicalHistoryNumber' in item)">
-         <Column field="users_medicalHistoryNumber" header="病歷號碼"/>
+      <div v-if="dataset.some(item => 'users_medical_history_number' in item)">
+         <Column field="users_medical_history_number" header="病歷號碼"/>
       </div>
       <div v-if="dataset.some(item => 'users_id' in item)">
          <Column field="users_id" header="身分證字號"/>

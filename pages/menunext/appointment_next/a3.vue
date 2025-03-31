@@ -44,7 +44,7 @@
         return content.value.filter(item => {
             const timeMatch = !timeSelectContent.value || item.booking_time === timeSelectContent.value.value
             const dateMatch = !date.value || item.booking_date === formatDate(date.value)
-            const chartMatch = !numberContent.value || item.users.users_medicalHistoryNumber.includes(numberContent.value)
+            const chartMatch = !numberContent.value || item.users.users_medical_history_number.includes(numberContent.value)
             const clinicMatch = !objectSelectContent.value || item.booking_clinic === objectSelectContent.value.value
             return timeMatch && dateMatch && chartMatch && clinicMatch
         })
@@ -52,7 +52,7 @@
 
     // 取得資料並初始化病歷號碼選單
     const fetchData = async () => {
-    const { data, error } = await supabase.from('booking').select(`*,users(users_name,users_medicalHistoryNumber)`)
+    const { data, error } = await supabase.from('booking').select(`*,users(users_name,users_medical_history_number)`)
     if (error) {
         console.error('error', error)
     } else {
@@ -98,10 +98,6 @@
     }
 
     onMounted(async() => {
-        const { data, error } = await supabase
-            .from('booking')
-            .delete()
-            .in('booking_number', [2,3])
         fetchData()
     })
 </script>

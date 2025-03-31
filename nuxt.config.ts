@@ -25,6 +25,7 @@ export default defineNuxtConfig({
   primevue: {
     importTheme: { from: '@/themes/index.js' }
   },
+
   runtimeConfig: {
     public: {
       // 這些變數 **會暴露給前端**
