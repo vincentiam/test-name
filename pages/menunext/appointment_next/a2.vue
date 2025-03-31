@@ -115,8 +115,6 @@
             <div class="col-span-9 flex flex-row items-center gap-2">
                 <label class="text-lg">病歷號碼:</label>
                 <InputText type="text" v-model="numberContent" />
-                <Button label="" />
-                <label class="text-lg">無處方簽章筆數: {{ prescription }}</label>
             </div>
         </div>
 
