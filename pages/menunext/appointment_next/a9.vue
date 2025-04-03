@@ -3,6 +3,8 @@ import {ref,watch} from 'vue'
 import { storeToRefs } from 'pinia'
 import { userData } from '~/store/userstore.js'
 import {useRouter} from 'vue-router'
+import { useToast } from 'primevue/usetoast';
+const toast = useToast();
 const router = useRouter()
 
 const user = userData()
@@ -17,10 +19,47 @@ const drInput = ref('')
 const dateInput = ref(new Date())
 const selectTime = ref('早上')
 
+const showMessageDialog = ref(false)
+const showIdDialog = ref(false)
+
 const showSearchDialog = ref(false) 
 const title =ref("查詢病患的病歷號碼")
 
 const column = defineModel('column')
+
+const usersName = ref(null)
+const usersData = ref(null)
+const fetchMedicalHistoryNumber = async() => {
+    const { data, error } = await supabase.from('users').select('*').eq('users_name',usersName.value)
+    if(error){
+        console.log(error.message)
+    }
+    usersData.value = data[0].users_medical_history_number
+    console.log (data)
+} 
+
+const newMedicalHistoryNumber = ref(null)
+
+const idSubmit = async() => {
+    const { error } = await supabase.from('users').update({users_medical_history_number:newMedicalHistoryNumber.value}).eq('users_name',usersName.value)
+    if(error){
+        console.log(error.message)
+        toast.add({
+            severity: 'error',
+            summary: '修改失敗',
+            life: 1500
+        })
+    }else{
+        toast.add({
+            severity: 'success',
+            summary: '修改成功',
+            life: 1500
+        })
+        newMedicalHistoryNumber.value = null
+        usersData.value = null 
+        usersName.value = null
+    }
+}
 
 const boardDialog = ref(false)
 watch(date, (date) => {
@@ -112,7 +151,7 @@ async function fetchAppointments() {
 
 
 
-const cardDialog = ref(true)
+const cardDialog = ref(false)
     const records = ref([
     {
         編號: '0000027952',
@@ -222,7 +261,7 @@ onMounted(()=>{
             </div>        
             
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/appointment_next/a9')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="showIdDialog = true">
                     <i class="material-icons !text-6xl">search</i>
                     <p>修改患者的病歷號碼</p>
                 </Button>
@@ -236,7 +275,7 @@ onMounted(()=>{
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/appointment_next/a9_6')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="showMessageDialog = true">
                     <i class="material-icons !text-6xl">search</i>
                     <p>現金收入日報表</p>
                 </Button>
@@ -439,6 +478,56 @@ onMounted(()=>{
         </div>
         </div>
     </Dialog>
-            
+        <Dialog
+            v-model:visible="showMessageDialog"
+            modal
+            header="訊息通知"
+            :closable="false"
+            :style="{ width: '25rem' }"
+            >
+            <div class="flex flex-col items-center text-center">
+                <p class="text-xl text-gray-800 leading-relaxed">
+                本功能為醫院級採用<br />
+                批價處結帳專用報表
+                </p>
+                <Button
+                label="確定"
+                icon="pi pi-check"
+                class="mt-4 px-6 py-2 text-lg"
+                @click="showMessageDialog = false"
+                />
+            </div>
+        </Dialog>
+        <Dialog
+            v-model:visible="showIdDialog"
+            modal
+            header="修改病歷號碼"
+            :closable="false"
+            :style="{ width: '25rem' }"
+            >
+            <div class="flex flex-col w-full">
+                <div class="flex flex-row w-full items-center">
+                    <p>請輸入患者姓名：</p>
+                    <InputText type="text" v-model="usersName" @blur="fetchMedicalHistoryNumber" />
+                </div>
+                <div class="flex flex-row w-full items-center">
+                    <p>原來的病歷號碼：</p>
+                    <p>{{ usersData }}</p>
+                </div>
+                <div class="flex flex-row w-full items-center">
+                    <p>新的病歷號碼：</p>
+                    <InputText type="text" v-model="newMedicalHistoryNumber"/>
+                </div>
+            </div>
+            <template #footer>
+                <div>
+                    
+                    <Button label="取消" @click="showIdDialog = false;usersName = null" />
+                    
+                    <Button label="確定" @click="idSubmit"/>
+                    
+                </div>
+            </template>
+        </Dialog>
     </div>
 </template>
