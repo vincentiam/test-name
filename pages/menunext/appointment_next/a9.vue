@@ -4,6 +4,9 @@ import { storeToRefs } from 'pinia'
 import { userData } from '~/store/userstore.js'
 import {useRouter} from 'vue-router'
 import { useToast } from 'primevue/usetoast';
+import { z } from 'zod'
+import { zodResolver } from '@primevue/forms/resolvers/zod';
+
 const toast = useToast();
 const router = useRouter()
 
@@ -27,40 +30,123 @@ const title =ref("查詢病患的病歷號碼")
 
 const column = defineModel('column')
 
-const usersName = ref(null)
-const usersData = ref(null)
+const idSchema = z.object({
+    usersName: z.string({ required_error: '姓名不可為空' }).min(1, '請輸入姓名'),
+    newMedicalHistoryNumber: z
+    .string({ required_error: '號碼不可為空' })
+    .regex(/^\d{6}$/, { message: '必須是剛好 6 位數字（如 000001）' }),
+})
+const idResolver = ref(zodResolver(idSchema));
+const idForm = ref({
+    usersName: null,
+    usersData: null,
+    newMedicalHistoryNumber: null
+})
 const fetchMedicalHistoryNumber = async() => {
-    const { data, error } = await supabase.from('users').select('*').eq('users_name',usersName.value)
+    console.log(idForm.value.usersName)
+    const { data, error } = await supabase.from('users').select('*').eq('users_name',idForm.value.usersName)
     if(error){
         console.log(error.message)
     }
-    usersData.value = data[0].users_medical_history_number
+    idForm.value.usersData = data[0].users_medical_history_number
     console.log (data)
 } 
-
-const newMedicalHistoryNumber = ref(null)
-
 const idSubmit = async() => {
-    const { error } = await supabase.from('users').update({users_medical_history_number:newMedicalHistoryNumber.value}).eq('users_name',usersName.value)
-    if(error){
-        console.log(error.message)
+    const result = idSchema.safeParse(idForm.value);
+    if (!result.success) {
         toast.add({
             severity: 'error',
-            summary: '修改失敗',
+            summary: '登錄失敗',
+            detail: '資料填寫錯誤',
             life: 1500
-        })
-    }else{
-        toast.add({
-            severity: 'success',
-            summary: '修改成功',
-            life: 1500
-        })
-        newMedicalHistoryNumber.value = null
-        usersData.value = null 
-        usersName.value = null
+        });
+    } else {
+        const { error } = await supabase.from('users').update({users_medical_history_number:idForm.value.newMedicalHistoryNumbernewMedicalHistoryNumber}).eq('users_name',idForm.value.usersName)
+        if(error){
+            console.log(error.message)
+            toast.add({
+                severity: 'error',
+                summary: '修改失敗',
+                life: 1500
+            })
+        }else{
+            toast.add({
+                severity: 'success',
+                summary: '修改成功',
+                life: 1500
+            })
+            newMedicalHistoryNumber.value = null
+            usersData.value = null 
+            usersName.value = null
+        }
     }
 }
 
+const printDialog = ref(false)
+const condition = ref('recent')
+const includeArea = ref(false)
+const fields = ref([])
+const printTableDialog = ref(false)
+const usersDateDialog = ref(null)
+const rangeDates = ref(null)
+const startNumber = ref(null)
+const endNumber = ref(null)
+const conditionOptions = [
+  { label: '最近複診日期區間', value: 'recent' },
+  { label: '病患編號區間資料', value: 'idRange' },
+  { label: '初診日期區間資料', value: 'firstVisit' },
+  { label: '全部病患基本資料', value: 'all' },
+]
+
+const formatDate = (d) => {
+    console.log(d)
+    const date_temp = new Date(d);
+    const year = date_temp.getFullYear();
+    const month = String(date_temp.getMonth() + 1).padStart(2, '0'); // 月份從 0 開始
+    const day = String(date_temp.getDate()).padStart(2, '0');
+
+    const formatted = `${year}-${month}-${day}`;
+    console.log(formatted); // 輸出：2025-03-10
+    return formatted
+}
+
+const printDialogConfirm = async() => {
+    rangeDates.value[0] = formatDate(rangeDates.value[0])
+    rangeDates.value[1] = formatDate(rangeDates.value[1])
+    if (condition.value === 'all'){
+        const { data, error } = await supabase.from('users').select('*')
+        if(error) {
+    console.log(error.message)
+}
+console.log(data)
+    } else if (condition.value === 'recent'){
+        const { data, error } = await supabase.from('users').select('*').gte('users_last_date', rangeDates.value[0]).lte('users_last_date', rangeDates.value[1])
+        if(error) {
+    console.log(error.message)
+}
+console.log(data)
+    } else if (condition.value === 'idRange'){
+        const { data, error } = await supabase.from('users').select('*').rpc('get_users_by_medical_number_range', {
+            start_val: startNumber,
+            end_val: endNumber
+        })
+        if(error) {
+    console.log(error.message)
+}
+console.log(data)
+    } else {
+        const { data, error } = await supabase.from('users').select('*').gte('users_start_date', rangeDates.value[0]).lte('users_start_date', rangeDates.value[1])
+        if(error) {
+    console.log(error.message)
+}
+console.log(data)
+    }
+    printTableDialog.value = true
+}
+
+const onClose = () => {
+  visible.value = false
+}
 const boardDialog = ref(false)
 watch(date, (date) => {
     const year = date.getFullYear() - 1911; // 轉換成民國年
@@ -268,7 +354,7 @@ onMounted(()=>{
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/appointment_next/a9')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="printDialog = true">
                     <i class="material-icons !text-6xl">search</i>
                     <p>列印病患基本資料</p>
                 </Button>
@@ -396,9 +482,6 @@ onMounted(()=>{
             </template>
         </Dialog>
         
-        
-        <Button label="Show" @click="visible = true" />
-        
         <Dialog v-model:visible="searchDialog" modal header="醫師排班查詢">
             <div class="w-full">
                 <div class="flex flex-row items-center w-full mb-3">
@@ -428,7 +511,6 @@ onMounted(()=>{
             </div>
         </Dialog>
         
-        <Button label="Show" @click="visible = true" />
         
         <Dialog v-model:visible="cardDialog" modal header="欠款登記簿">
     <div class="flex flex-col space-y-2">
@@ -503,31 +585,106 @@ onMounted(()=>{
             modal
             header="修改病歷號碼"
             :closable="false"
-            :style="{ width: '25rem' }"
             >
-            <div class="flex flex-col w-full">
-                <div class="flex flex-row w-full items-center">
-                    <p>請輸入患者姓名：</p>
-                    <InputText type="text" v-model="usersName" @blur="fetchMedicalHistoryNumber" />
-                </div>
-                <div class="flex flex-row w-full items-center">
-                    <p>原來的病歷號碼：</p>
-                    <p>{{ usersData }}</p>
-                </div>
-                <div class="flex flex-row w-full items-center">
-                    <p>新的病歷號碼：</p>
-                    <InputText type="text" v-model="newMedicalHistoryNumber"/>
-                </div>
+            <div class="flex flex-col justify-center">
+                <Form v-slot="$idForm" :resolver="idResolver" @submit="idSubmit" class="flex flex-col justify-center items-center">
+                    <div class="flex flex-col items-center w-full justify-start">
+                        <div class="flex flex-row items-center w-full justify-start">
+                            <p>請輸入患者姓名：</p>
+                            <InputText type="text" name="usersName" v-model="idForm.usersName" @blur="fetchMedicalHistoryNumber" />
+                        </div>
+                        <Message
+                            v-if="$idForm.usersName?.invalid"
+                            severity="error"
+                            size="small"
+                            variant="simple"
+                            class="mb-4"
+                            >{{ $idForm.usersName.error?.message }}</Message
+                        >
+                    </div>
+                    <div class="flex flex-row w-full items-center justify-start mb-5">
+                        <p>原來的病歷號碼：</p>
+                        <p>{{ idForm.usersData }}</p>
+                    </div>
+                    
+                    <div class="flex flex-col items-center w-full">
+                        <div class="flex flex-row items-center w-full justify-start">
+                            <p>新的病歷號碼：</p>
+                            <InputText type="text" name="newMedicalHistoryNumber" v-model="idForm.newMedicalHistoryNumber"/>
+                        </div>
+                        <Message
+                            v-if="$idForm.newMedicalHistoryNumber?.invalid"
+                            severity="error"
+                            size="small"
+                            variant="simple"
+                            class="mb-4"
+                            >{{ $idForm.newMedicalHistoryNumber.error?.message }}</Message
+                        >   
+                    </div>
+                    <div class="flex flex-row w-full items-center justify-end gap-2">
+                    
+                        <Button class="transition-transform duration-300 !border-none hover:scale-150 !bg-red-500" label="取消" @click="showIdDialog = false;idForm.usersName = null;idForm.newMedicalHistoryNumber" />
+                        
+                        <Button class="transition-transform duration-300 !border-none hover:scale-150 !bg-sky-400" label="確定" type="submit"/>
+                        
+                    </div>
+                </Form>
             </div>
-            <template #footer>
-                <div>
-                    
-                    <Button label="取消" @click="showIdDialog = false;usersName = null" />
-                    
-                    <Button label="確定" @click="idSubmit"/>
-                    
+        </Dialog>
+
+        <Dialog v-model:visible="printDialog">
+            <div class="space-y-4">
+
+                <!-- 條件輸入 -->
+                <div class="grid grid-cols-2 gap-2">
+                <div v-for="(label, i) in conditionOptions" :key="i" class="flex items-center gap-2">
+                    <RadioButton v-model="condition" :inputId="'cond' + i" :value="label.value" />
+                    <label :for="'cond' + i" class="text-sm">{{ label.label }}</label>
                 </div>
-            </template>
+                </div>
+
+                <div class="w-full">
+                    <div v-if="condition==='firstVisit' || condition==='recent'" class="w-full">
+                        <p class="text-sm text-slate-500">MM/DD/YYYY~MM/DD/YYYY</p>
+                        <DatePicker v-model="rangeDates" selectionMode="range" :manualInput="false" class="w-full"/>
+                    </div>
+                    <div v-if="condition==='idRange' " class="flex flex-rol w-full">
+                        <InputText v-model="startNumber" class="w-full items-center"/>
+                        <p class="text-lg items-center">~</p>
+                        <InputText v-model="endNumber" class="w-full items-center"/>
+                    </div>
+                </div>
+
+                <!-- 欄位排序 -->
+                <div class="border-t pt-4 space-y-2">
+                    
+
+                    <div class="flex items-center gap-4 text-sm">
+                        <RadioButton v-model="includeArea" inputId="noArea" :value="false" />
+                        <label for="noArea">不含區號及地址列印</label>
+                        <RadioButton v-model="includeArea" inputId="yesArea" :value="true" />
+                        <label for="yesArea">含區號及地址列印</label>
+                    </div>
+                    </div>
+
+                    <!-- 按鈕 -->
+                    <div class="flex justify-end gap-2 pt-2">
+                    <Button label="確定" icon="pi pi-check" @click="printDialogConfirm" />
+                    <Button label="離開" icon="pi pi-times" class="p-button-secondary" @click="onClose" />
+                </div>
+                </div>
+        </Dialog>
+        <Dialog v-model:visible="printTableDialog">
+            <div>
+                
+                <DataTable :value="usersDataDialog" tableStyle="min-width: 50rem">
+                    <Column field="code" header="Code"></Column>
+                    <Column field="name" header="Name"></Column>
+                    <Column field="category" header="Category"></Column>
+                    <Column field="quantity" header="Quantity"></Column>
+                </DataTable>
+                
+            </div>
         </Dialog>
     </div>
 </template>

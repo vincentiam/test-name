@@ -75,7 +75,6 @@
                 <div class="col-span-9 flex flex-row items-center gap-2">
                     <label class="text-lg">掛號日期:</label>
                     <DatePicker v-model="date" />
-                    <Button label="-" />
                     <label class="text-lg">診別:</label>
                     <Select
                         v-model="objectSelectContent"

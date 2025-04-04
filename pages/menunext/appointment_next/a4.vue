@@ -179,7 +179,7 @@ const formatDate = (d) => {
             >
             <div class="flex flex-row justify-between w-full px-50vh"> 
                 <NuxtLink to="/menunext/appointment">
-                    <Button class="transition-transform duration-300 hover:scale-200" label="取消" />
+                <Button class="transition-transform duration-300 hover:scale-200 !bg-red-500" label="取消" />
                 </NuxtLink>               
                 <Button class="transition-transform duration-300 hover:scale-200 !bg-sky-400" label="確定" type="submit"/>
             </div>
