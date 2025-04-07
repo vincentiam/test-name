@@ -116,30 +116,30 @@ const printDialogConfirm = async() => {
     if (condition.value === 'all'){
         const { data, error } = await supabase.from('users').select('*')
         if(error) {
-    console.log(error.message)
-}
-console.log(data)
+            console.log(error.message)
+        }
+        console.log(data)
     } else if (condition.value === 'recent'){
         const { data, error } = await supabase.from('users').select('*').gte('users_last_date', rangeDates.value[0]).lte('users_last_date', rangeDates.value[1])
         if(error) {
-    console.log(error.message)
-}
-console.log(data)
+            console.log(error.message)
+        }
+        console.log(data)
     } else if (condition.value === 'idRange'){
         const { data, error } = await supabase.from('users').select('*').rpc('get_users_by_medical_number_range', {
             start_val: startNumber,
             end_val: endNumber
         })
         if(error) {
-    console.log(error.message)
-}
-console.log(data)
+            console.log(error.message)
+        }
+        console.log(data)
     } else {
         const { data, error } = await supabase.from('users').select('*').gte('users_start_date', rangeDates.value[0]).lte('users_start_date', rangeDates.value[1])
         if(error) {
-    console.log(error.message)
-}
-console.log(data)
+            console.log(error.message)
+        }
+        console.log(data)
     }
     printTableDialog.value = true
 }
@@ -640,6 +640,7 @@ onMounted(()=>{
                 <div v-for="(label, i) in conditionOptions" :key="i" class="flex items-center gap-2">
                     <RadioButton v-model="condition" :inputId="'cond' + i" :value="label.value" />
                     <label :for="'cond' + i" class="text-sm">{{ label.label }}</label>
+                    <DatePicker v-model="rangeDates" selectionMode="range" :manualInput="false" class="w-full"/>
                 </div>
                 </div>
 
