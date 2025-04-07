@@ -91,6 +91,16 @@ const usersDateDialog = ref(null)
 const rangeDates = ref(null)
 const startNumber = ref(null)
 const endNumber = ref(null)
+const printDataTable = ref(null)
+const openPrintDialog = () => {
+    printDialog.value = true
+    condition.value = 'recent'
+    includeArea.value = false
+    fields.value = []
+    rangeDates.value = null
+    startNumber.value = null
+    endNumber.value = null
+}
 const conditionOptions = [
   { label: '最近複診日期區間', value: 'recent' },
   { label: '病患編號區間資料', value: 'idRange' },
@@ -109,43 +119,60 @@ const formatDate = (d) => {
     console.log(formatted); // 輸出：2025-03-10
     return formatted
 }
+const printData = () => {
+    const printContents = document.getElementById('printTable')?.innerHTML
+    const originalContents = document.body.innerHTML
 
+    if (printContents) {
+        document.body.innerHTML = printContents
+        window.print()
+        document.body.innerHTML = originalContents
+        location.reload()
+    }
+}
 const printDialogConfirm = async() => {
-    rangeDates.value[0] = formatDate(rangeDates.value[0])
-    rangeDates.value[1] = formatDate(rangeDates.value[1])
+    
     if (condition.value === 'all'){
         const { data, error } = await supabase.from('users').select('*')
         if(error) {
             console.log(error.message)
         }
         console.log(data)
+        printDataTable.value = data
     } else if (condition.value === 'recent'){
+        rangeDates.value[0] = formatDate(rangeDates.value[0])
+        rangeDates.value[1] = formatDate(rangeDates.value[1])
         const { data, error } = await supabase.from('users').select('*').gte('users_last_date', rangeDates.value[0]).lte('users_last_date', rangeDates.value[1])
         if(error) {
             console.log(error.message)
         }
         console.log(data)
+        printDataTable.value = data
     } else if (condition.value === 'idRange'){
-        const { data, error } = await supabase.from('users').select('*').rpc('get_users_by_medical_number_range', {
-            start_val: startNumber,
-            end_val: endNumber
-        })
+        const { data, error } = await supabase.from('users').select('*').gte('users_medical_history_number', startNumber.value)
+        .lte('users_medical_history_number', endNumber.value)
         if(error) {
             console.log(error.message)
         }
         console.log(data)
+        printDataTable.value = data
     } else {
+        rangeDates.value[0] = formatDate(rangeDates.value[0])
+        rangeDates.value[1] = formatDate(rangeDates.value[1])
         const { data, error } = await supabase.from('users').select('*').gte('users_start_date', rangeDates.value[0]).lte('users_start_date', rangeDates.value[1])
         if(error) {
             console.log(error.message)
         }
         console.log(data)
+        printDataTable.value = data
     }
+    
     printTableDialog.value = true
+    rangeDates.value=null
 }
 
 const onClose = () => {
-  visible.value = false
+    printDialog.value = false
 }
 const boardDialog = ref(false)
 watch(date, (date) => {
@@ -354,7 +381,7 @@ onMounted(()=>{
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="printDialog = true">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="openPrintDialog">
                     <i class="material-icons !text-6xl">search</i>
                     <p>列印病患基本資料</p>
                 </Button>
@@ -640,7 +667,6 @@ onMounted(()=>{
                 <div v-for="(label, i) in conditionOptions" :key="i" class="flex items-center gap-2">
                     <RadioButton v-model="condition" :inputId="'cond' + i" :value="label.value" />
                     <label :for="'cond' + i" class="text-sm">{{ label.label }}</label>
-                    <DatePicker v-model="rangeDates" selectionMode="range" :manualInput="false" class="w-full"/>
                 </div>
                 </div>
 
@@ -676,16 +702,21 @@ onMounted(()=>{
                 </div>
         </Dialog>
         <Dialog v-model:visible="printTableDialog">
-            <div>
+            <div id="printTable">
                 
-                <DataTable :value="usersDataDialog" tableStyle="min-width: 50rem">
-                    <Column field="code" header="Code"></Column>
-                    <Column field="name" header="Name"></Column>
-                    <Column field="category" header="Category"></Column>
-                    <Column field="quantity" header="Quantity"></Column>
+                <DataTable :value="printDataTable" tableStyle="width: full">
+                    <Column field="users_name" header="病患姓名"></Column>
+                    <Column field="users_medical_history_number" header="病患編號"></Column>
+                    <Column field="users_birthday" header="病患生日"></Column>
+                    <Column field="users_phone" header="病患電話"></Column>
                 </DataTable>
                 
             </div>
+            <template #footer>
+                <div class="flex flex-row justify-center w-full">
+                    <Button label="列印" @click="printData"/>
+                </div>
+            </template>
         </Dialog>
     </div>
 </template>
