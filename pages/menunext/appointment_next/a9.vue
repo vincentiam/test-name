@@ -6,6 +6,7 @@ import {useRouter} from 'vue-router'
 import { useToast } from 'primevue/usetoast';
 import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod';
+import { Dialog } from 'primevue';
 
 const toast = useToast();
 const router = useRouter()
@@ -135,45 +136,139 @@ const printDialogConfirm = async() => {
     if (condition.value === 'all'){
         const { data, error } = await supabase.from('users').select('*')
         if(error) {
+            toast.add({
+                severity: 'error',
+                summary: '抓取錯誤',
+                detail: `${error.message}`,
+                life: 1500
+            });
             console.log(error.message)
+        } else if(data.length===0){
+            toast.add({
+                severity: 'info',
+                summary: '無資料',
+                life: 3000
+            });
+        } else {
+            printDataTable.value = data
+            printTableDialog.value = true
+            rangeDates.value=null
         }
         console.log(data)
-        printDataTable.value = data
     } else if (condition.value === 'recent'){
-        rangeDates.value[0] = formatDate(rangeDates.value[0])
-        rangeDates.value[1] = formatDate(rangeDates.value[1])
-        const { data, error } = await supabase.from('users').select('*').gte('users_last_date', rangeDates.value[0]).lte('users_last_date', rangeDates.value[1])
+        let startDateTemp = formatDate(rangeDates.value[0])
+        let endtDateTemp = formatDate(rangeDates.value[1])
+        const { data, error } = await supabase.from('users').select('*').gte('users_last_date', startDateTemp).lte('users_last_date', endtDateTemp)
         if(error) {
+            toast.add({
+                severity: 'error',
+                summary: '抓取錯誤',
+                detail: `${error.message}`,
+                life: 1500
+            });
             console.log(error.message)
+        } else if(data.length===0){
+            toast.add({
+                severity: 'info',
+                summary: '無資料',
+                life: 3000
+            });
+        } else {
+            printDataTable.value = data
+            printTableDialog.value = true
+            rangeDates.value=null
         }
         console.log(data)
-        printDataTable.value = data
+        
     } else if (condition.value === 'idRange'){
         const { data, error } = await supabase.from('users').select('*').gte('users_medical_history_number', startNumber.value)
         .lte('users_medical_history_number', endNumber.value)
         if(error) {
+            toast.add({
+                severity: 'error',
+                summary: '抓取錯誤',
+                detail: `${error.message}`,
+                life: 1500
+            });
             console.log(error.message)
+        } else if(data.length===0){
+            toast.add({
+                severity: 'info',
+                summary: '無資料',
+                life: 3000
+            });
+        } else {
+            printDataTable.value = data
+            printTableDialog.value = true
+            rangeDates.value=null
         }
         console.log(data)
-        printDataTable.value = data
     } else {
-        rangeDates.value[0] = formatDate(rangeDates.value[0])
-        rangeDates.value[1] = formatDate(rangeDates.value[1])
-        const { data, error } = await supabase.from('users').select('*').gte('users_start_date', rangeDates.value[0]).lte('users_start_date', rangeDates.value[1])
+        let startDateTemp = formatDate(rangeDates.value[0])
+        let endtDateTemp = formatDate(rangeDates.value[1])
+        const { data, error } = await supabase.from('users').select('*').gte('users_start_date', startDateTemp).lte('users_start_date', endtDateTemp)
         if(error) {
+            toast.add({
+                severity: 'error',
+                summary: '抓取錯誤',
+                detail: `${error.message}`,
+                life: 1500
+            });
             console.log(error.message)
+        } else if(data.length===0){
+            toast.add({
+                severity: 'info',
+                summary: '無資料',
+                life: 3000
+            });
+        } else {
+            printDataTable.value = data
+            printTableDialog.value = true
+            rangeDates.value=null
         }
         console.log(data)
-        printDataTable.value = data
     }
     
-    printTableDialog.value = true
-    rangeDates.value=null
 }
 
 const onClose = () => {
     printDialog.value = false
 }
+
+//掛號結帳單
+const orderDialog = ref(false)
+// 表單資料
+const orderForm = ref({
+  checkoutDate: null,
+  checkoutPeriod: '',
+  staff: '',
+  printItems: [],
+  printMode: 'together',
+  groupByPerson: false
+})
+
+// Checkbox 項目
+const orderPrintOptions = [
+  { label: '結帳明細表', value: 'summary' },
+  { label: '退費明細表', value: 'refundDetail' },
+  { label: '還款明細表', value: 'refund' },
+  { label: '智慧看診人次表', value: 'ai' },
+  { label: '結帳總表', value: 'total' },
+]
+
+// RadioButton 項目
+const orderPrintModes = [
+  { label: '明細與總表一起印', value: 'together' },
+  { label: '明細與總表分開印', value: 'separate' },
+  { label: '僅使用病歷用印', value: 'none' },
+]
+
+// 提交處理
+const orderSubmit = () => {
+  console.log('送出表單資料:', form.value)
+  dialogVisible.value = false
+}
+
 const boardDialog = ref(false)
 watch(date, (date) => {
     const year = date.getFullYear() - 1911; // 轉換成民國年
@@ -395,7 +490,7 @@ onMounted(()=>{
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/appointment_next/a9')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="orderDialog = true;console.log('test')">
                     <i class="material-icons !text-6xl">search</i>
                     <p>列印掛號結帳單</p>
                 </Button>
@@ -701,7 +796,7 @@ onMounted(()=>{
                 </div>
                 </div>
         </Dialog>
-        <Dialog v-model:visible="printTableDialog">
+        <Dialog v-model:visible="printTableDialog" @hide="printDataTable=null">
             <div id="printTable">
                 
                 <DataTable :value="printDataTable" tableStyle="width: full">
@@ -709,6 +804,8 @@ onMounted(()=>{
                     <Column field="users_medical_history_number" header="病患編號"></Column>
                     <Column field="users_birthday" header="病患生日"></Column>
                     <Column field="users_phone" header="病患電話"></Column>
+                    <Column field="users_address" header="病患地址"></Column>
+                    <Column field="users_remark" header="備註"></Column>
                 </DataTable>
                 
             </div>
@@ -717,6 +814,66 @@ onMounted(()=>{
                     <Button label="列印" @click="printData"/>
                 </div>
             </template>
+        </Dialog>
+        <!-- Dialog 區塊 -->
+        <Dialog v-model:visible="orderDialog" header="列印掛號結帳單" :modal="true" :style="{ width: '50vw' }">
+            <div class="space-y-4">
+
+            <!-- 結帳日期 -->
+                <div class="flex items-center gap-3">
+                    <label for="checkoutDate" class="w-24 shrink-0">結帳日期</label>
+                    <Calendar id="checkoutDate" v-model="form.checkoutDate" dateFormat="yy/mm/dd" class="w-full" />
+                </div>
+
+            <!-- 結帳時段 -->
+                <div class="flex items-center gap-3">
+                    <label for="checkoutPeriod" class="w-24 shrink-0">結帳時段</label>
+                    <InputText id="checkoutPeriod" v-model="form.checkoutPeriod" class="w-full" placeholder="例如：1,3" />
+                </div>
+
+            <!-- 掛號人員 -->
+                <div class="flex items-center gap-3">
+                    <label for="staff" class="w-24 shrink-0">掛號人員</label>
+                    <InputText id="staff" v-model="form.staff" class="w-full" placeholder="可輸入代號，空白為全部" />
+                </div>
+
+            <!-- 列印項目 Checkbox -->
+                <div>
+                    <h3 class="font-semibold mb-2">列印項目</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div v-for="item in orderPrintOptions" :key="item.value" class="flex items-center gap-2">
+                        <Checkbox :inputId="item.value" :value="item.value" v-model="form.printItems" />
+                        <label :for="item.value">{{ item.label }}</label>
+                        </div>
+                    </div>
+                </div>
+
+            <!-- 列印方式 RadioButton -->
+                <div>
+                    <h3 class="font-semibold mb-2">列印方式</h3>
+                    <div class="flex flex-col gap-2">
+                        <div v-for="mode in orderPrintModes" :key="mode.value" class="flex items-center gap-2">
+                            <RadioButton :inputId="mode.value" :value="mode.value" name="printMode" v-model="form.printMode" />
+                            <label :for="mode.value">{{ mode.label }}</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <Checkbox inputId="groupByPerson" v-model="form.groupByPerson" />
+                    <label for="groupByPerson">同一人掛一起印</label>
+                </div>
+
+                <!-- 錯誤提示 -->
+                <div class="text-red-500 font-semibold">
+                    僅可出非一般科資料、僅可出備科病人
+                </div>
+
+                <!-- 底部按鈕 -->
+                <div class="flex justify-end gap-3 pt-4">
+                    <Button label="確定" icon="pi pi-check" @click="orderSubmit" />
+                    <Button label="取消" icon="pi pi-times" severity="danger" @click="orderDialog = false" />
+                </div>
+            </div>
         </Dialog>
     </div>
 </template>
