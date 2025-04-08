@@ -822,19 +822,19 @@ onMounted(()=>{
             <!-- 結帳日期 -->
                 <div class="flex items-center gap-3">
                     <label for="checkoutDate" class="w-24 shrink-0">結帳日期</label>
-                    <Calendar id="checkoutDate" v-model="form.checkoutDate" dateFormat="yy/mm/dd" class="w-full" />
+                    <Calendar id="checkoutDate" v-model="orderForm.checkoutDate" dateFormat="yy/mm/dd" class="w-full" />
                 </div>
 
             <!-- 結帳時段 -->
                 <div class="flex items-center gap-3">
                     <label for="checkoutPeriod" class="w-24 shrink-0">結帳時段</label>
-                    <InputText id="checkoutPeriod" v-model="form.checkoutPeriod" class="w-full" placeholder="例如：1,3" />
+                    <InputText id="checkoutPeriod" v-model="orderForm.checkoutPeriod" class="w-full" placeholder="例如：1,3" />
                 </div>
 
             <!-- 掛號人員 -->
                 <div class="flex items-center gap-3">
                     <label for="staff" class="w-24 shrink-0">掛號人員</label>
-                    <InputText id="staff" v-model="form.staff" class="w-full" placeholder="可輸入代號，空白為全部" />
+                    <InputText id="staff" v-model="orderForm.staff" class="w-full" placeholder="可輸入代號，空白為全部" />
                 </div>
 
             <!-- 列印項目 Checkbox -->
@@ -842,7 +842,7 @@ onMounted(()=>{
                     <h3 class="font-semibold mb-2">列印項目</h3>
                     <div class="grid grid-cols-2 gap-2">
                         <div v-for="item in orderPrintOptions" :key="item.value" class="flex items-center gap-2">
-                        <Checkbox :inputId="item.value" :value="item.value" v-model="form.printItems" />
+                        <Checkbox :inputId="item.value" :value="item.value" v-model="orderForm.printItems" />
                         <label :for="item.value">{{ item.label }}</label>
                         </div>
                     </div>
@@ -853,13 +853,13 @@ onMounted(()=>{
                     <h3 class="font-semibold mb-2">列印方式</h3>
                     <div class="flex flex-col gap-2">
                         <div v-for="mode in orderPrintModes" :key="mode.value" class="flex items-center gap-2">
-                            <RadioButton :inputId="mode.value" :value="mode.value" name="printMode" v-model="form.printMode" />
+                            <RadioButton :inputId="mode.value" :value="mode.value" name="printMode" v-model="orderForm.printMode" />
                             <label :for="mode.value">{{ mode.label }}</label>
                         </div>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <Checkbox inputId="groupByPerson" v-model="form.groupByPerson" />
+                    <Checkbox inputId="groupByPerson" v-model="orderForm.groupByPerson" />
                     <label for="groupByPerson">同一人掛一起印</label>
                 </div>
 
