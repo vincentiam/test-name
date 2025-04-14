@@ -15,6 +15,7 @@ import CardDialog from '~/components/a9/card_dialog.vue'
 import PrintPatientDialog from '~/components/a9/print_patient_dialog.vue'
 import PrintDataTable from '~/components/a9/print_data_table.vue'
 import PrintRegisteredDialog from '~/components/a9/print_registered_dialog.vue'
+import ForFreeDialog from '~/components/a9/for_free_dialog.vue'
 
 const toast = useToast();
 const router = useRouter()
@@ -238,6 +239,9 @@ const supabase = useSupabaseClient()
 const formattedAppointments = ref([])
 const cardDialog = ref(false)
 
+//病患免收關係人
+const freeDialog = ref(false)
+
 onMounted(()=>{
     date.value=new Date()
     selectTime.value='早上'
@@ -311,7 +315,7 @@ watch(printDataTable,(r) => {
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="freeDialog = true">
                     <i class="material-icons !text-6xl">search</i>
                     <p>設定病患免收關係人</p>
                 </Button>
@@ -468,5 +472,6 @@ watch(printDataTable,(r) => {
                 <p class="mt-4">IC卡片更新作業進行中，請稍候...</p>
             </div>
         </Dialog>
+        <ForFreeDialog v-model:visible="freeDialog"/>
     </div>
 </template>
