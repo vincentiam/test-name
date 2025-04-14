@@ -8,6 +8,13 @@ import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { Dialog } from 'primevue';
 import TableData from '~/components/tableData.vue';
+import DateDialog from '~/components/a9/waiting_board/dateDialog.vue'
+import BoardDialog from '~/components/a9/waiting_board/boardDialog.vue'
+import SchedulSearchDialog from '~/components/a9/schedul_dearch_dialog.vue'
+import CardDialog from '~/components/a9/card_dialog.vue'
+import PrintPatientDialog from '~/components/a9/print_patient_dialog.vue'
+import PrintDataTable from '~/components/a9/print_data_table.vue'
+import PrintRegisteredDialog from '~/components/a9/print_registered_dialog.vue'
 
 const toast = useToast();
 const router = useRouter()
@@ -139,45 +146,11 @@ const updateICCardJob = () => {
     }, 3000)
 }
 
-
-
+// 列印病患資料
 const printDialog = ref(false)
-const condition = ref('recent')
-const includeArea = ref(false)
-const fields = ref([])
 const printTableDialog = ref(false)
-const usersDateDialog = ref(null)
-const rangeDates = ref(null)
-const startNumber = ref(null)
-const endNumber = ref(null)
 const printDataTable = ref(null)
-const openPrintDialog = () => {
-    printDialog.value = true
-    condition.value = 'recent'
-    includeArea.value = false
-    fields.value = []
-    rangeDates.value = null
-    startNumber.value = null
-    endNumber.value = null
-}
-const conditionOptions = [
-    { label: '最近複診日期區間', value: 'recent' },
-    { label: '病患編號區間資料', value: 'idRange' },
-    { label: '初診日期區間資料', value: 'firstVisit' },
-    { label: '全部病患基本資料', value: 'all' },
-]
 
-const formatDate = (d) => {
-    console.log(d)
-    const date_temp = new Date(d);
-    const year = date_temp.getFullYear();
-    const month = String(date_temp.getMonth() + 1).padStart(2, '0'); // 月份從 0 開始
-    const day = String(date_temp.getDate()).padStart(2, '0');
-
-    const formatted = `${year}-${month}-${day}`;
-    console.log(formatted); // 輸出：2025-03-10
-    return formatted
-}
 const printData = () => {
     const printContents = document.getElementById('printTable')?.innerHTML
     const originalContents = document.body.innerHTML
@@ -189,142 +162,57 @@ const printData = () => {
         location.reload()
     }
 }
-const printDialogConfirm = async() => {
-    
-    if (condition.value === 'all'){
-        const { data, error } = await supabase.from('users').select('*')
-        if(error) {
-            toast.add({
-                severity: 'error',
-                summary: '抓取錯誤',
-                detail: `${error.message}`,
-                life: 1500
-            });
-            console.log(error.message)
-        } else if(data.length===0){
-            toast.add({
-                severity: 'info',
-                summary: '無資料',
-                life: 3000
-            });
-        } else {
-            printDataTable.value = data
-            printTableDialog.value = true
-            rangeDates.value=null
-        }
-        console.log(data)
-    } else if (condition.value === 'recent'){
-        let startDateTemp = formatDate(rangeDates.value[0])
-        let endtDateTemp = formatDate(rangeDates.value[1])
-        const { data, error } = await supabase.from('users').select('*').gte('users_last_date', startDateTemp).lte('users_last_date', endtDateTemp)
-        if(error) {
-            toast.add({
-                severity: 'error',
-                summary: '抓取錯誤',
-                detail: `${error.message}`,
-                life: 1500
-            });
-            console.log(error.message)
-        } else if(data.length===0){
-            toast.add({
-                severity: 'info',
-                summary: '無資料',
-                life: 3000
-            });
-        } else {
-            printDataTable.value = data
-            printTableDialog.value = true
-            rangeDates.value=null
-        }
-        console.log(data)
-        
-    } else if (condition.value === 'idRange'){
-        const { data, error } = await supabase.from('users').select('*').gte('users_medical_history_number', startNumber.value)
-        .lte('users_medical_history_number', endNumber.value)
-        if(error) {
-            toast.add({
-                severity: 'error',
-                summary: '抓取錯誤',
-                detail: `${error.message}`,
-                life: 1500
-            });
-            console.log(error.message)
-        } else if(data.length===0){
-            toast.add({
-                severity: 'info',
-                summary: '無資料',
-                life: 3000
-            });
-        } else {
-            printDataTable.value = data
-            printTableDialog.value = true
-            rangeDates.value=null
-        }
-        console.log(data)
-    } else {
-        let startDateTemp = formatDate(rangeDates.value[0])
-        let endtDateTemp = formatDate(rangeDates.value[1])
-        const { data, error } = await supabase.from('users').select('*').gte('users_start_date', startDateTemp).lte('users_start_date', endtDateTemp)
-        if(error) {
-            toast.add({
-                severity: 'error',
-                summary: '抓取錯誤',
-                detail: `${error.message}`,
-                life: 1500
-            });
-            console.log(error.message)
-        } else if(data.length===0){
-            toast.add({
-                severity: 'info',
-                summary: '無資料',
-                life: 3000
-            });
-        } else {
-            printDataTable.value = data
-            printTableDialog.value = true
-            rangeDates.value=null
-        }
-        console.log(data)
-    }
-    
-}
-
-const onClose = () => {
-    printDialog.value = false
-}
 
 //掛號結帳單
 const orderDialog = ref(false)
-// 表單資料
-const orderForm = ref({
-    checkoutDate: null,
-    checkoutPeriod: '',
-    staff: '',
-    printItems: [],
-    printMode: 'together',
-    groupByPerson: false
-})
+
+const openOrderDialog = () => {
+    orderDialog.value = true
+    orderForm.value = {
+        checkoutDate: null,
+        checkoutPeriod: '',
+        staff: '',
+        printItems: [],
+        feePrintMode: 'together',
+        patientPrintMode: 'prescriptionNumber',
+        groupByPerson: false
+    }
+}
 
 // Checkbox 項目
 const orderPrintOptions = [
     { label: '結帳明細表', value: 'summary' },
     { label: '退費明細表', value: 'refundDetail' },
     { label: '還款明細表', value: 'refund' },
-    { label: '智慧看診人次表', value: 'ai' },
+    { label: '醫師看診人次表', value: 'doctor' },
     { label: '結帳總表', value: 'total' },
 ]
 
 // RadioButton 項目
 const orderPrintModes = [
-    { label: '明細與總表一起印', value: 'together' },
-    { label: '明細與總表分開印', value: 'separate' },
-    { label: '僅使用病歷用印', value: 'none' },
+    { label: '健保與自費一起印', value: 'together' },
+    { label: '健保與自費分開印', value: 'separate' },
 ]
 
+const elsePrintOptions = [
+    { label: '明細表印出掛號身分', value: 'identity' },
+    { label: '健保明細不印', value: 'noPrint' },
+]
+
+const pantientPrintModes = [
+    { label: '依處方編號排序', value: 'prescriptionNumber' },
+    { label: '依病歷號排序', value: 'medicalNumber' },
+    { label: '同一人排在一起', value: 'people' },
+    { label: '診號', value: 'clinicNumber' },
+]
+
+
 // 提交處理
-const orderSubmit = () => {
-    console.log('送出表單資料:', form.value)
-    dialogVisible.value = false
+const orderSubmit = async() => {
+    orderDialog.value = false
+    console.log('送出表單資料:', orderForm.value)
+    const { data, error } = await supabase.from('users').select('*')
+    openOrderDialog()
 }   
 
 // 顯示病患基本資料
@@ -346,168 +234,17 @@ watch(date, (date) => {
     const day = date.getDate();
     date_roc.value = `${year}/${month}/${day}`
 })
-
 const supabase = useSupabaseClient()
 const formattedAppointments = ref([])
-
-async function fetchAppointments() {
-    const { data, error } = await supabase
-        .from('appointment_list')
-        .select(`
-        dr(dr_id, dr_name),
-        users(users_id),
-        appointment_list_visit_list,
-        appointment_list_done
-        `)
-
-    if (error) {
-        console.error('Error fetching appointments:', error)
-        return
-    }
-        console.log(data)
-    // 分析初診 & 複診
-    const groupedData = {}
-
-    data.forEach(appointment => {
-        const doctorId = appointment.dr.dr_id
-        if (!groupedData[doctorId]) {
-        groupedData[doctorId] = {
-            doctor_name: appointment.dr.dr_name,
-            first_visit_count: 0,
-            waiting_count: 0, 
-            completed_count: 0,
-            total_visits: 0
-        }
-        }
-
-        // 判斷是否為初診
-        const isFirstVisit = !data.some(a => a.users.users_id === appointment.users.users_id ) //&& a.visitList < appointment.visitList
-
-        if (isFirstVisit) {
-        groupedData[doctorId].first_visit_count++
-        }
-        
-        if (appointment.appointment_list_done === '完診') {
-        groupedData[doctorId].completed_count++
-        } else if (appointment.appointment_list_done === '候診') {
-        groupedData[doctorId].waiting_count++
-        }
-
-        groupedData[doctorId].total_visits++
-    })
-
-    formattedAppointments.value = Object.values(groupedData)
-    }
-
-    const trueNext = (r) => {
-    searchDialog.value=false
-    if(radioSearch.value==="dr"){
-        router.push({
-        path: `/menunext/appointment_next/${r}`,
-        query: {
-            filter: drInput.value,
-            column: radioSearch.value,
-        }
-    });   
-    } else if(radioSearch.value==="date"){
-        router.push({
-        path: `/menunext/appointment_next/${r}`,
-        query: {
-            filter: dateInput.value,
-            column: radioSearch.value,
-        }
-    });   
-    }else{
-        router.push({
-        path: `/menunext/appointment_next/${r}`,
-        query: {
-            column: radioSearch.value,
-        }
-    });   
-    }
-}
-
-
-
 const cardDialog = ref(false)
-    const records = ref([
-    {
-        編號: '0000027952',
-        姓名: '蘇妍婷',
-        日期: '113/03/04',
-        電話: '0990245556',
-        金額: 100,
-        延款否: 'N'
-    }
-    ])
-
-    const detail = ref({
-    處方日期: '113/03/04',
-    碼段: '3',
-    診別: '01',
-    病歷號: '0000027952',
-    姓名: '蘇妍婷',
-    包藥天數: '0',
-    診斷代碼: '01'
-    })
-
-    const treatments = ref([
-    { 項目: '【肘】膏 - 右', 數量: 1 },
-    { 項目: '【肘】封 - 右', 數量: 1 },
-    { 項目: '【肘】針', 數量: 1 },
-    { 項目: '針破', 數量: 1 },
-    { 項目: '神頂', 數量: 1 },
-    { 項目: '傷真', 數量: 1 }
-    ])
-
-    const currentIndex = ref(0)
-
-    const goFirst = () => currentIndex.value = 0
-    const goLast = () => currentIndex.value = records.value.length - 1
-    const goNext = () => {
-    if (currentIndex.value < records.value.length - 1) currentIndex.value++
-    }
-    const goPrev = () => {
-    if (currentIndex.value > 0) currentIndex.value--
-    }
-
-    const editRecord = () => {
-    console.log('Edit record:', records.value[currentIndex.value])
-    }
-    const deleteRecord = () => {
-    if (records.value.length > 0) {
-        records.value.splice(currentIndex.value, 1)
-        currentIndex.value = Math.max(0, currentIndex.value - 1)
-    }
-    }
-    const selectPrescription = () => {
-    alert('選擇處方功能尚未實作')
-    }
-    const saveRecord = () => {
-    alert('紀錄已儲存')
-    }
-    const addRecord = () => {
-    records.value.push({
-        編號: '',
-        姓名: '',
-        日期: '',
-        電話: '',
-        金額: 0,
-        延款否: ''
-    })
-    currentIndex.value = records.value.length - 1
-    }
-    const searchRecord = () => {
-    alert('查詢功能尚未實作')
-    }
-    const printRecord = () => {
-    window.print()
-}
 
 onMounted(()=>{
     date.value=new Date()
     selectTime.value='早上'
-    fetchAppointments()
+})
+
+watch(printDataTable,(r) => {
+    console.log(r)
 })
 </script>
 
@@ -546,7 +283,7 @@ onMounted(()=>{
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="openPrintDialog">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="printDialog = true">
                     <i class="material-icons !text-6xl">search</i>
                     <p>列印病患基本資料</p>
                 </Button>
@@ -560,7 +297,7 @@ onMounted(()=>{
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="orderDialog = true;console.log('test')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="openOrderDialog">
                     <i class="material-icons !text-6xl">search</i>
                     <p>列印掛號結帳單</p>
                 </Button>
@@ -622,136 +359,11 @@ onMounted(()=>{
                 </Button>
             </div>
         </div>
+        <DateDialog v-model:visible="dateDialog" v-model:date="date" v-model:selectTime="selectTime" v-model:boardDialog="boardDialog"/>
+        <BoardDialog v-model:visible="boardDialog" v-model:date_roc="date_roc" v-model:selectTime="selectTime" v-model:formattedAppointments="formattedAppointments" v-model:dateDialog="dateDialog"/>
+        <SchedulSearchDialog v-model:visible="searchDialog" v-model:radioSearch="radioSearch" v-model:drInput="drInput" v-model:dateInput="dateInput"/>
+        <CardDialog v-model:visible="cardDialog" title="病患基本資料" />
         
-        <Dialog v-model:visible="dateDialog">
-            <template #header>
-                <p>請輸入查詢日期</p>
-            </template>
-            <div class="flex flex-col justify-center items-center w-full">
-                <DatePicker v-model="date" inline showWeek class="w-full sm:w-[30rem]"/>
-                <div class="flex flex-row w-full" >
-                    <ButtonGroup class="w-full">
-                        <Button class="w-full" :class="selectTime !== '早上' ? '!bg-white !text-black' : '!bg-amber-500 !text-white'" variant="text" label="早上" @click="selectTime='早上'"/>
-
-                        <Button class="w-full" :class="selectTime !== '下午' ? '!bg-white !text-black' : '!bg-amber-500 !text-white'" variant="text" label="下午" @click="selectTime='下午'"/>
-
-                        <Button class="w-full" :class="selectTime !== '晚上' ? '!bg-white !text-black' : '!bg-amber-500 !text-white'" variant="text" label="晚上" @click="selectTime='晚上'"/>
-                    </ButtonGroup>
-                </div>   
-            </div>
-
-            <template #footer>
-                
-                <Button label="取消" @click="dateDialog=false"/>
-                
-                <Button label="確定" @click="boardDialog=true; dateDialog=false"/>
-                
-            </template>
-        </Dialog>
-        
-        <Dialog v-model:visible="boardDialog" modal header="Edit Profile" :style="{ width: '25rem' }">
-            <template #header>
-                <p>{{date_roc}}{{ selectTime }}</p>
-            </template>
-            <div class="flex flex-col justify-center items-center w-full">
-
-                <DataTable :value="formattedAppointments" class="w-full">
-                    <Column field="doctor_name" header="診斷醫師"></Column>
-                    <Column field="first_visit_count" header="初診"></Column>
-                    <Column field="waiting_count" header="候診"></Column>
-                    <Column field="completed_count" header="完診"></Column>
-                    <Column field="total_visits" header="合計"></Column>
-                </DataTable>
-
-            </div>
-
-            <template #footer>
-                
-                <Button label="退出" @click="boardDialog=false"/>
-                
-                <Button label="更換時段" @click="boardDialog=false; dateDialog=true"/>
-                
-            </template>
-        </Dialog>
-        
-        <Dialog v-model:visible="searchDialog" modal header="醫師排班查詢">
-            <div class="w-full">
-                <div class="flex flex-row items-center w-full mb-3">
-                    <RadioButton v-model="radioSearch" inputId="dr" name="group" value="dr" class="mr-2"/>
-                    <label for="dr">依醫師查詢</label>
-                </div>
-                <div class="flex flex-row items-center w-full mb-3">
-                    <RadioButton v-model="radioSearch" inputId="date" name="group" value="date" class="mr-2"/>
-                    <label for="date">依日期查詢</label>
-                </div>
-                <div class="flex flex-row items-center w-full mb-3">
-                    <RadioButton v-model="radioSearch" inputId="all" name="group" value="all" class="mr-2"/>
-                    <label for="all">全院排班表</label>
-                </div>
-                <div class="flex flex-col w-full mb-3" v-if="radioSearch==='dr'">
-                    <label>請輸入查詢醫師</label>
-                    <InputText type="text" v-model="drInput" />
-                </div>
-                <div class="flex flex-col w-full mb-3" v-if="radioSearch==='date'">
-                    <label>請輸入查詢日期</label>
-                    <DatePicker v-model="dateInput" />
-                </div>
-            </div>   
-            <div class="flex justify-end gap-2">
-                <Button type="button" label="Cancel" severity="secondary" @click="searchDialog = false"></Button>
-                <Button type="button" label="Save" @click="trueNext('a9_2')"></Button>
-            </div>
-        </Dialog>
-        
-        
-        <Dialog v-model:visible="cardDialog" modal header="欠款登記簿">
-    <div class="flex flex-col space-y-2">
-        <!-- 表格區 -->
-        <DataTable :value="records" class="text-sm" scrollable scrollHeight="150px">
-            <Column field="編號" header="病患編號" />
-            <Column field="姓名" header="病患姓名" />
-            <Column field="日期" header="缺數日期" />
-            <Column field="電話" header="電話" />
-            <Column field="金額" header="缺數金額" />
-            <Column field="延款否" header="延款否(延款碼段)" />
-        </DataTable>
-
-        <!-- 詳細資訊 -->
-        <div class="grid grid-cols-3 gap-2 text-xs bg-gray-50 p-2 border rounded">
-            <div>處方日期：{{ detail.處方日期 }}</div>
-            <div>處方碼段：{{ detail.碼段 }}</div>
-            <div>診別：{{ detail.診別 }}</div>
-            <div>病歷編號：{{ detail.病歷號 }}</div>
-            <div>病患姓名：{{ detail.姓名 }}</div>
-            <div>包藥天數：{{ detail.包藥天數 }}</div>
-            <div>診斷代碼：{{ detail.診斷代碼 }}</div>
-        </div>
-
-        <!-- 診療項目 -->
-        <div class="mt-2">
-            <DataTable :value="treatments" class="text-sm" scrollable scrollHeight="100px">
-            <Column field="項目" header="醫令名稱" />
-            <Column field="數量" header="數量" />
-            </DataTable>
-        </div>
-
-        <!-- 按鈕列 -->
-        <div class="flex justify-between mt-4 flex-wrap gap-2">
-            <Button label="首筆" icon="pi pi-angle-double-left" outlined @click="goFirst" />
-            <Button label="上筆" icon="pi pi-angle-left" outlined @click="goPrev" />
-            <Button label="下筆" icon="pi pi-angle-right" outlined @click="goNext" />
-            <Button label="尾筆" icon="pi pi-angle-double-right" outlined @click="goLast" />
-            <Button label="修改" icon="pi pi-pencil" outlined @click="editRecord" />
-            <Button label="刪除" icon="pi pi-trash" outlined @click="deleteRecord" />
-            <Button label="選擇處方" icon="pi pi-search" outlined @click="selectPrescription" />
-            <Button label="存檔" icon="pi pi-save" @click="saveRecord" />
-            <Button label="新增" icon="pi pi-plus" @click="addRecord" />
-            <Button label="查詢" icon="pi pi-search" outlined @click="searchRecord" />
-            <Button label="列印" icon="pi pi-print" outlined @click="printRecord" />
-            <Button label="離開" icon="pi pi-sign-out" outlined @click="cardDialog = false" />
-        </div>
-        </div>
-    </Dialog>
         <Dialog
             v-model:visible="showMessageDialog"
             modal
@@ -824,127 +436,11 @@ onMounted(()=>{
             </div>
         </Dialog>
 
-        <Dialog v-model:visible="printDialog">
-            <div class="space-y-4">
-
-                <!-- 條件輸入 -->
-                <div class="grid grid-cols-2 gap-2">
-                <div v-for="(label, i) in conditionOptions" :key="i" class="flex items-center gap-2">
-                    <RadioButton v-model="condition" :inputId="'cond' + i" :value="label.value" />
-                    <label :for="'cond' + i" class="text-sm">{{ label.label }}</label>
-                </div>
-                </div>
-
-                <div class="w-full">
-                    <div v-if="condition==='firstVisit' || condition==='recent'" class="w-full">
-                        <p class="text-sm text-slate-500">MM/DD/YYYY~MM/DD/YYYY</p>
-                        <DatePicker v-model="rangeDates" selectionMode="range" :manualInput="false" class="w-full"/>
-                    </div>
-                    <div v-if="condition==='idRange' " class="flex flex-rol w-full">
-                        <InputText v-model="startNumber" class="w-full items-center"/>
-                        <p class="text-lg items-center">~</p>
-                        <InputText v-model="endNumber" class="w-full items-center"/>
-                    </div>
-                </div>
-
-                <!-- 欄位排序 -->
-                <div class="border-t pt-4 space-y-2">
-                    
-
-                    <div class="flex items-center gap-4 text-sm">
-                        <RadioButton v-model="includeArea" inputId="noArea" :value="false" />
-                        <label for="noArea">不含區號及地址列印</label>
-                        <RadioButton v-model="includeArea" inputId="yesArea" :value="true" />
-                        <label for="yesArea">含區號及地址列印</label>
-                    </div>
-                    </div>
-
-                    <!-- 按鈕 -->
-                    <div class="flex justify-end gap-2 pt-2">
-                    <Button label="確定" icon="pi pi-check" @click="printDialogConfirm" />
-                    <Button label="離開" icon="pi pi-times" class="p-button-secondary" @click="onClose" />
-                </div>
-                </div>
-        </Dialog>
-        <Dialog v-model:visible="printTableDialog" @hide="printDataTable=null">
-            <div id="printTable">
-                
-                <DataTable :value="printDataTable" tableStyle="width: full">
-                    <Column field="users_name" header="病患姓名"></Column>
-                    <Column field="users_medical_history_number" header="病患編號"></Column>
-                    <Column field="users_birthday" header="病患生日"></Column>
-                    <Column field="users_phone" header="病患電話"></Column>
-                    <Column field="users_address" header="病患地址"></Column>
-                    <Column field="users_remark" header="備註"></Column>
-                </DataTable>
-                
-            </div>
-            <template #footer>
-                <div class="flex flex-row justify-center w-full">
-                    <Button label="列印" @click="printData"/>
-                </div>
-            </template>
-        </Dialog>
-        <!-- Dialog 區塊 -->
-        <Dialog v-model:visible="orderDialog" header="列印掛號結帳單" :modal="true" :style="{ width: '50vw' }">
-            <div class="space-y-4">
-
-            <!-- 結帳日期 -->
-                <div class="flex items-center gap-3">
-                    <label for="checkoutDate" class="w-24 shrink-0">結帳日期</label>
-                    <Calendar id="checkoutDate" v-model="orderForm.checkoutDate" dateFormat="yy/mm/dd" class="w-full" />
-                </div>
-
-            <!-- 結帳時段 -->
-                <div class="flex items-center gap-3">
-                    <label for="checkoutPeriod" class="w-24 shrink-0">結帳時段</label>
-                    <InputText id="checkoutPeriod" v-model="orderForm.checkoutPeriod" class="w-full" placeholder="例如：1,3" />
-                </div>
-
-            <!-- 掛號人員 -->
-                <div class="flex items-center gap-3">
-                    <label for="staff" class="w-24 shrink-0">掛號人員</label>
-                    <InputText id="staff" v-model="orderForm.staff" class="w-full" placeholder="可輸入代號，空白為全部" />
-                </div>
-
-            <!-- 列印項目 Checkbox -->
-                <div>
-                    <h3 class="font-semibold mb-2">列印項目</h3>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div v-for="item in orderPrintOptions" :key="item.value" class="flex items-center gap-2">
-                        <Checkbox :inputId="item.value" :value="item.value" v-model="orderForm.printItems" />
-                        <label :for="item.value">{{ item.label }}</label>
-                        </div>
-                    </div>
-                </div>
-
-            <!-- 列印方式 RadioButton -->
-                <div>
-                    <h3 class="font-semibold mb-2">列印方式</h3>
-                    <div class="flex flex-col gap-2">
-                        <div v-for="mode in orderPrintModes" :key="mode.value" class="flex items-center gap-2">
-                            <RadioButton :inputId="mode.value" :value="mode.value" name="printMode" v-model="orderForm.printMode" />
-                            <label :for="mode.value">{{ mode.label }}</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <Checkbox inputId="groupByPerson" v-model="orderForm.groupByPerson" />
-                    <label for="groupByPerson">同一人掛一起印</label>
-                </div>
-
-                <!-- 錯誤提示 -->
-                <div class="text-red-500 font-semibold">
-                    僅可出非一般科資料、僅可出備科病人
-                </div>
-
-                <!-- 底部按鈕 -->
-                <div class="flex justify-end gap-3 pt-4">
-                    <Button label="確定" icon="pi pi-check" @click="orderSubmit" />
-                    <Button label="取消" icon="pi pi-times" severity="danger" @click="orderDialog = false" />
-                </div>
-            </div>
-        </Dialog>
+        <PrintPatientDialog v-model:visible="printDialog" v-model:printTableDialog="printTableDialog" v-model:printDataTable="printDataTable"/>
+        <PrintDataTable v-model:visible="printTableDialog" v-model:printDataTable="printDataTable"/>
+        <PrintRegisteredDialog v-model:visible="orderDialog"/>
+        
+        
         <Dialog v-model:visible="patientsDialogShow" class="w-screen h-screen" header="全部病患資料">
                 <TableData v-model="dataset"/>
         </Dialog>

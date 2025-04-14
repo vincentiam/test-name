@@ -71,11 +71,16 @@ onMounted(() => {
 </script>
 
 <template>
-    <DataTable :value="dataset">
-        <Column field="dr.dr_id" header="醫師編號" />
-        <Column field="dr.dr_name" header="醫師姓名" />
-        <Column field="drSchedule_clinic" header="科別" />
-        <Column field="drSchedule_date" header="日期" />
-        <Column field="drSchedule_time" header="時段" />
-    </DataTable>
+    <div v-if="dataset.length === 0" class="flex justify-center items-center h-screen">
+        <p class="text-2xl">查無資料</p>
+    </div>
+    <div v-else>
+        <DataTable :value="dataset">
+            <Column field="dr.dr_id" header="醫師編號" />
+            <Column field="dr.dr_name" header="醫師姓名" />
+            <Column field="drSchedule_clinic" header="科別" />
+            <Column field="drSchedule_date" header="日期" />
+            <Column field="drSchedule_time" header="時段" />
+        </DataTable>
+    </div>
 </template>
