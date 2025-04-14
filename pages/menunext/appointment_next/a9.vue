@@ -7,6 +7,7 @@ import { useToast } from 'primevue/usetoast';
 import { z } from 'zod'
 import { zodResolver } from '@primevue/forms/resolvers/zod';
 import { Dialog } from 'primevue';
+import TableData from '~/components/tableData.vue';
 
 const toast = useToast();
 const router = useRouter()
@@ -83,6 +84,63 @@ const idSubmit = async() => {
     }
 }
 
+const ICDialogShow = ref(false)
+const ICAuthDialogShow = ref(false)
+
+// 安裝 IC 讀卡機
+const downloadIC = () => {
+    ICDialogShow.value = true
+    setTimeout(() => {
+        ICDialogShow.value = false
+        toast.add({
+        severity: 'success',
+        summary: '安裝成功',
+        life: 3000
+        })
+    }, 3000)
+    }
+
+    // 認證 IC 讀卡機
+    const authIC = () => {
+    ICAuthDialogShow.value = true
+    setTimeout(() => {
+        ICAuthDialogShow.value = false
+        toast.add({
+        severity: 'success',
+        summary: '認證成功',
+        life: 3000
+        })
+    }, 3000)
+}
+const uploadDialogShow = ref(false)
+const updateCardDialogShow = ref(false)
+
+const uploadDailyJob = () => {
+    uploadDialogShow.value = true
+    setTimeout(() => {
+    uploadDialogShow.value = false
+    toast.add({
+        severity: 'success',
+        summary: '上傳成功',
+        life: 3000
+    })
+    }, 3000)
+}
+
+const updateICCardJob = () => {
+    updateCardDialogShow.value = true
+    setTimeout(() => {
+    updateCardDialogShow.value = false
+    toast.add({
+        severity: 'success',
+        summary: '更新成功',
+        life: 3000
+    })
+    }, 3000)
+}
+
+
+
 const printDialog = ref(false)
 const condition = ref('recent')
 const includeArea = ref(false)
@@ -103,10 +161,10 @@ const openPrintDialog = () => {
     endNumber.value = null
 }
 const conditionOptions = [
-  { label: '最近複診日期區間', value: 'recent' },
-  { label: '病患編號區間資料', value: 'idRange' },
-  { label: '初診日期區間資料', value: 'firstVisit' },
-  { label: '全部病患基本資料', value: 'all' },
+    { label: '最近複診日期區間', value: 'recent' },
+    { label: '病患編號區間資料', value: 'idRange' },
+    { label: '初診日期區間資料', value: 'firstVisit' },
+    { label: '全部病患基本資料', value: 'all' },
 ]
 
 const formatDate = (d) => {
@@ -239,34 +297,46 @@ const onClose = () => {
 const orderDialog = ref(false)
 // 表單資料
 const orderForm = ref({
-  checkoutDate: null,
-  checkoutPeriod: '',
-  staff: '',
-  printItems: [],
-  printMode: 'together',
-  groupByPerson: false
+    checkoutDate: null,
+    checkoutPeriod: '',
+    staff: '',
+    printItems: [],
+    printMode: 'together',
+    groupByPerson: false
 })
 
 // Checkbox 項目
 const orderPrintOptions = [
-  { label: '結帳明細表', value: 'summary' },
-  { label: '退費明細表', value: 'refundDetail' },
-  { label: '還款明細表', value: 'refund' },
-  { label: '智慧看診人次表', value: 'ai' },
-  { label: '結帳總表', value: 'total' },
+    { label: '結帳明細表', value: 'summary' },
+    { label: '退費明細表', value: 'refundDetail' },
+    { label: '還款明細表', value: 'refund' },
+    { label: '智慧看診人次表', value: 'ai' },
+    { label: '結帳總表', value: 'total' },
 ]
 
 // RadioButton 項目
 const orderPrintModes = [
-  { label: '明細與總表一起印', value: 'together' },
-  { label: '明細與總表分開印', value: 'separate' },
-  { label: '僅使用病歷用印', value: 'none' },
+    { label: '明細與總表一起印', value: 'together' },
+    { label: '明細與總表分開印', value: 'separate' },
+    { label: '僅使用病歷用印', value: 'none' },
 ]
 
 // 提交處理
 const orderSubmit = () => {
-  console.log('送出表單資料:', form.value)
-  dialogVisible.value = false
+    console.log('送出表單資料:', form.value)
+    dialogVisible.value = false
+}   
+
+// 顯示病患基本資料
+const patientsDialogShow = ref(false)
+const dataset = ref(null)
+const patientsInformation = async() => {
+    const { data, error } = await supabase.from('users').select('*')
+    if(error){
+        console.log(error.message)
+    }
+    dataset.value = data
+    patientsDialogShow.value = true
 }
 
 const boardDialog = ref(false)
@@ -511,35 +581,35 @@ onMounted(()=>{
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="patientsInformation()">
                     <i class="material-icons !text-6xl">search</i>
                     <p>全部病患基本資料</p>
                 </Button>
             </div>
     
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="authIC">
                     <i class="material-icons !text-6xl">search</i>
                     <p>IC卡讀卡機認證</p>
                 </Button>
             </div>
             
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/appointment')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="downloadIC">
                     <i class="material-icons !text-6xl">search</i>
                     <p>安裝IC卡讀卡機</p>
                 </Button>
             </div>
 
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/appointment')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="uploadDailyJob">
                     <i class="material-icons !text-6xl">search</i>
                     <p>每日上傳作業</p>
                 </Button>
             </div>
 
             <div class="flex justify-center items-center h-full">        
-                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="router.push('/menunext/appointment')">
+                <Button class="transition-transform duration-300 !text-4xl hover:scale-150" label="Submit" size="large" @click="updateICCardJob">
                     <i class="material-icons !text-6xl">search</i>
                     <p>IC卡卡片更新作業</p>
                 </Button>
@@ -873,6 +943,33 @@ onMounted(()=>{
                     <Button label="確定" icon="pi pi-check" @click="orderSubmit" />
                     <Button label="取消" icon="pi pi-times" severity="danger" @click="orderDialog = false" />
                 </div>
+            </div>
+        </Dialog>
+        <Dialog v-model:visible="patientsDialogShow" class="w-screen h-screen" header="全部病患資料">
+                <TableData v-model="dataset"/>
+        </Dialog>
+        <Dialog v-model:visible="ICAuthDialogShow" header="讀卡機認證中">
+            <div class="flex flex-col w-full items-center justify-center">
+                <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent" animationDuration=".5s" aria-label="認證中" />
+                <p class="mt-4">IC讀卡機認證中，請稍候...</p>
+            </div>
+        </Dialog>
+        <Dialog v-model:visible="ICDialogShow" header="讀卡機安裝中">
+            <div class="flex flex-col w-full items-center justify-center">
+                <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent" animationDuration=".5s" aria-label="Custom ProgressSpinner" />
+                <p class="mt-4">IC讀卡機安裝中，請稍候...</p>
+            </div>
+        </Dialog>
+        <Dialog v-model:visible="uploadDialogShow" header="每日上傳中">
+            <div class="flex flex-col w-full items-center justify-center">
+                <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent" animationDuration=".5s" aria-label="每日上傳中" />
+                <p class="mt-4">每日上傳作業進行中，請稍候...</p>
+            </div>
+        </Dialog>
+        <Dialog v-model:visible="updateCardDialogShow" header="卡片更新中">
+            <div class="flex flex-col w-full items-center justify-center">
+                <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="8" fill="transparent" animationDuration=".5s" aria-label="卡片更新中" />
+                <p class="mt-4">IC卡片更新作業進行中，請稍候...</p>
             </div>
         </Dialog>
     </div>
